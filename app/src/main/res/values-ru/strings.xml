@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Password Manager</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_welcome">Добро пожаловать!</string>
+    <string name="next">Далее</string>
+    <string name="setup">Настройка</string>
+
+    <string name="slide_1_description">Помните только один пароль, чтобы сохранить все остальные: PIN-коды кредитных карт, веб и почтовых аккаунтов, пароли компьютера и Wi-Fi…</string>
+    <string name="slide_2_description">Ваши пароли надежно защищены 256-битным шифром Advanced Encryption Standard (AES).</string>
+    <string name="slide_3_description">Синхронизируйте зашифрованные пароли в облачное хранилище данных и восстановите их в случае смены или утери устройства.</string>
+    <string name="slide_4_description">Получите доступ к своим данным на ПК с помощью бесплатного Windows/Mac приложения. Загрузите его на сайте www.safe-in-cloud.com.</string>
+
+    <string name="database_setup">База данных</string>
+    <string name="create_new_database">Создать новую базу данных и установить для нее пароль</string>
+    <string name="restore_database">Восстановить базу данных из облака</string>
+    <string name="title_activity_create_database">Создать базу данных</string>
+    <string name="set_password">Установите пароль:</string>
+    <string name="show_password">Показать пароль</string>
+</resources>
