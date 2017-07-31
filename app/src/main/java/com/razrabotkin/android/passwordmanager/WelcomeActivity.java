@@ -34,10 +34,10 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Проверяем, запущено ли приложение в первый раз, перед вызовом setContentView()
-        // Если метод isFirstTimeLaunch() возвращает ложь, вызываем метод, запускающий главную операцию, и завершаем текущую
+        // Если метод isFirstTimeLaunch() возвращает ложь, вызываем метод, запускающий операцию ввода пароля, и завершаем текущую
         prefManager = new PrefManager(this);
         if (!prefManager.isFirstTimeLaunch()) {
-            launchHomeScreen();
+            launchPasswordScreen();
             finish();   //TODO: Попробовать убрать эту строку, т.к. она вызывается в методе launchHomeScreen();
         }
 
@@ -118,8 +118,13 @@ public class WelcomeActivity extends AppCompatActivity {
         finish();
     }
 
+    private void launchPasswordScreen() {
+        prefManager.setFirstTimeLaunch(false);
+        startActivity(new Intent(WelcomeActivity.this, PasswordActivity.class));
+        finish();
+    }
+
     private void launchSetupScreen() {
-        //prefManager.setFirstTimeLaunch(false);
         Intent intent = new Intent(WelcomeActivity.this, SetupActivity.class);
         startActivity(intent);
         finish();

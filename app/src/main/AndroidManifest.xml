@@ -35,6 +35,30 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.razrabotkin.android.passwordmanager.SetupActivity" />
         </activity>
+        <activity
+            android:name=".PasswordActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+
+        <!-- //TODO: Законспектировать! Чтобы разметка отодвигалась при открытии клавиатуры (не работает) -->
+        <activity
+            android:name=".GoProActivity"
+            android:label="@string/go_pro"
+            android:parentActivityName=".PasswordActivity" />
+        <activity
+            android:name=".EditorActivity"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".MainActivity">
+            <!-- Метаданные родительской операции для поддержки 4.0 и ниже -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <provider
+            android:name=".data.PasswordProvider"
+            android:authorities="com.razrabotkin.android.passwordmanager"
+            android:exported="false" />
+
     </application>
 
 </manifest>

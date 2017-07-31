@@ -4,7 +4,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_keyboard">Клавиатура</string>
 
     <string name="title_activity_welcome">Добро пожаловать!</string>
     <string name="next">Далее</string>
@@ -20,5 +21,36 @@
     <string name="restore_database">Восстановить базу данных из облака</string>
     <string name="title_activity_create_database">Создать базу данных</string>
     <string name="set_password">Установите пароль:</string>
+    <string name="confirm_password">Подтвердите пароль:</string>
+    <string name="enter_password">Введите пароль:</string>
+    <string name="cancel">Отмена</string>
     <string name="show_password">Показать пароль</string>
+    <string name="minimum_password_length">Минимальная длина пароля составляет 4 символа</string>
+    <string name="passwords_do_not_match">Пароли не совпадают</string>
+    <string name="password_incorrect">Пароль неверен</string>
+    <string name="error">Ошибка</string>
+
+    <string name="go_pro">Перейти на PRO!</string>
+    <string name="button_go_pro">Перейти на PRO</string>
+    <string name="activity_go_pro_text">Пробный период длится две недели, затем все функции Pro будут отключены. Разблокируйте полную функциональность приложения на всех ваших Android устройствах единоразовой покупкой.</string>
+    <string name="item_cloud_synchronization">Синхронизация с облаком</string>
+    <string name="item_unlimited_card_storage">Неограниченное количество карт</string>
+    <string name="item_website_icons_for_cards">Иконки веб-сайтов для карт</string>
+    <string name="item_password_generator">Генератор паролей</string>
+    <string name="item_image_attachments">Прикрепление изображений</string>
+    <string name="item_fast_unlock">Быстрая разблокировка</string>
+    <string name="item_login_with_fingerprint">Вход по отпечатку пальца</string>
+    <string name="item_android_wear_application">Android Wear приложение</string>
+    <string name="item_copy_to_notification_panel">Копировать в Панель уведомлений</string>
+    <string name="item_auto_fill_in_chrome">Автозаполнение в Chrome</string>
+    <string name="item_backup_and_restore">Резервное копирование и восстановление</string>
+    <string name="item_empty_clipboard_by_timeout">Очистка буфера обмена</string>
+    <string name="action_save">Сохранить</string>
+    <string name="action_delete">Удалить</string>
+
+    <string name="editor_delete_pet_successful">Запись удалена</string>
+    <string name="editor_delete_pet_failed">Ошибка при удалении записи</string>
+    <string name="delete_dialog_msg">Удалить запись?</string>
+    <string name="delete">Удалить</string>
+    <string name="action_delete_all_entries">Удалить все записи</string>
 </resources>

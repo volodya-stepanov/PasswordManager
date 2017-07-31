@@ -3,40 +3,95 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_setup"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.razrabotkin.android.passwordmanager.SetupActivity"
-    android:orientation="vertical">
+    android:gravity="center">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_app"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/database_setup"/>
-
-    <RadioGroup
-        android:layout_width="wrap_content"
+    <!--Общий макет со всей этой хуйнёй в центре-->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RadioButton
+        <!--Изображение ключа-->
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create_new_database"
-            android:onClick="createDatabase"/>
+            android:src="@drawable/ic_app"
+            android:layout_gravity="center"/>
 
-        <RadioButton
-            android:layout_width="wrap_content"
+        <!--Надпись-->
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/restore_database"
-            android:onClick="restoreDatabase"/>
+            android:text="@string/database_setup"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textStyle="bold"
+            android:layout_marginLeft="48dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
 
-    </RadioGroup>
+        <!--Группа переключателей-->
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--Горизонтальный макет из переключателя и его заголовка 1-->
+            <!--//TODO: Разобраться, как сделать отступы между самой радиокнопкой и её текстом-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+
+                <RadioButton
+                    android:onClick="createDatabase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <TextView
+                    android:onClick="createDatabase"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/create_new_database"
+                    android:textAppearance="@android:style/TextAppearance.Widget"/>
+
+            </LinearLayout>
+
+            <!--Горизонтальный макет из переключателя и его заголовка 2-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:onClick="restoreDatabase"
+                android:gravity="center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/restore_database"
+                    android:textAppearance="@android:style/TextAppearance.Widget"
+                    />
+
+            </LinearLayout>
+        </RadioGroup>
+    </LinearLayout>
 </LinearLayout>

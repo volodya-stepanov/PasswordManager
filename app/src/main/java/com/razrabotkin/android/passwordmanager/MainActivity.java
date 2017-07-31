@@ -1,20 +1,36 @@
 package com.razrabotkin.android.passwordmanager;
 
+import android.app.LoaderManager;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int PASSWORD_LOADER = 0;
+
+    PasswordCursorAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +43,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -40,6 +56,50 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Находим ListView для заполнения
+        ListView cardsListView = (ListView) findViewById(R.id.listview_cards);
+
+        // Находим и устанавливаем empty view на ListView таким образом,
+        // что оно отображается, только когда в списке 0 пунктов
+        View emptyView = findViewById(R.id.empty_view);
+        cardsListView.setEmptyView(emptyView);
+
+        // Настраиваем CursorAdapter
+        mCursorAdapter = new PasswordCursorAdapter(this, null);
+
+        // Привязываем CursorAdapter к ListView
+        cardsListView.setAdapter(mCursorAdapter);
+
+        // Настраиваем обработчик щелчка
+        cardsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // Создаём новый интент для перехода к {@link EditorActivity}
+                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+
+                // Формируем URI контента, который представляет конкретную карту, которую мы щёлкнули,
+                // прикрепляя id (переданный в качестве входного параметра в этот метод) к
+                // {@link PasswordEntry#CONTENT_URI}.
+                // Например, URI будет равен "com.razrabotkin.android.passwordmanager/passwords/2",
+                // если мы нажмём на карту с ID = 2.
+                Uri currentCardUri = ContentUris.withAppendedId(PasswordContract.PasswordEntry.CONTENT_URI, id);
+
+                // Устанавливаем URI в качестве значения поля Data интента
+                intent.setData(currentCardUri);
+
+                // Запускаем {@link EditorActivity}, чтобы отобразить данные выбранной карты
+                startActivity(intent);
+            }
+        });
+
+        // Инициализируем загрузчик
+        getLoaderManager().initLoader(PASSWORD_LOADER, null, this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -66,12 +126,44 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                return true;
+            case R.id.action_insert_dummy_data:
+                insertPassword();
+                return true;
+            case R.id.action_delete_all_entries:
+                deleteAllEntries();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Удаляет все записи из базы данных
+     */
+    private void deleteAllEntries() {
+        int rowsDeleted = getContentResolver().delete(PasswordContract.PasswordEntry.CONTENT_URI, null, null);
+        Log.v("CatalogActivity", rowsDeleted + " rows deleted from database");
+    }
+
+    /**
+     * Добавляет в базу данных фейковую запись
+     */
+    private void insertPassword() {
+        // Создаем объект ContentValues, в котором имена колонок - ключи,
+        // а атрибуты записи - значения.
+        ContentValues values = new ContentValues();
+        values.put(PasswordContract.PasswordEntry.COLUMN_NAME, "Запись 1");
+        values.put(PasswordContract.PasswordEntry.COLUMN_LOGIN, "User");
+        values.put(PasswordContract.PasswordEntry.COLUMN_PASSWORD, "Password");
+
+        // Вставляем новую строку в провайдер с помощью контент-резолвера.
+        // Используем {@link PasswordEntry#CONTENT_URI}, чтобы обозначить, что мы хотим вставить
+        // в таблицу паролей.
+        // Получаем новый URI контента, который в будущем позволит нам получить доступ к этой тестовой записи.
+        Uri newUri = getContentResolver().insert(PasswordContract.PasswordEntry.CONTENT_URI, values);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -97,5 +189,36 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Определяем массив projection, который указывает, какие колонки из базы данных
+        // мы увидим после этого запроса.
+        String[] projection = {
+                PasswordContract.PasswordEntry._ID,
+                PasswordContract.PasswordEntry.COLUMN_NAME,
+                PasswordContract.PasswordEntry.COLUMN_LOGIN
+        };
+
+        // Этот загрузчик выполнит метод query в фоновом потоке
+        return new CursorLoader(this,
+                PasswordContract.PasswordEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Обновляем {@link PasswordCursorAdapter} новым куросором, содержащим обновленные данные
+        mCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Метод, вызываемый, когда данные должны быть удалены
+        mCursorAdapter.swapCursor(null);
     }
 }

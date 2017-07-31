@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_keyboard">Keyboard</string>
 
     <string name="title_activity_welcome">Welcome</string>
     <string name="next">Next</string>
@@ -33,6 +34,43 @@
         completions."
     </string>
     <string name="set_password">Set password:</string>
+    <string name="confirm_password">Confirm password:</string>
+    <string name="enter_password">Enter password:</string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="show_password">Show password</string>
+    <string name="minimum_password_length">Minimum password length is 4 symbols</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="error">Error</string>
+    <string name="action_gopro">Go Pro</string>
+    <string name="go_pro">Go PRO!</string>
+    <string name="button_go_pro">GO PRO</string>
+    <string name="activity_go_pro_text">Pro trial period lasts for two weeks, then all Pro features will be disabled. Unlock the full application functionality for all your Android devices with a single in-app purchase.</string>
+    <string name="item_cloud_synchronization">Cloud synchronization</string>
+    <string name="item_unlimited_card_storage">Unlimited card storage</string>
+    <string name="item_website_icons_for_cards">Website icons for cards</string>
+    <string name="item_password_generator">Password generator</string>
+    <string name="item_image_attachments">Image attachments</string>
+    <string name="item_fast_unlock">Fast unlock</string>
+    <string name="item_login_with_fingerprint">Login with fingerprint</string>
+    <string name="item_android_wear_application">Android Wear application</string>
+    <string name="item_copy_to_notification_panel">Copy to Notification panel</string>
+    <string name="item_auto_fill_in_chrome">Auto-fill in Chrome</string>
+    <string name="item_backup_and_restore">Backup and restore</string>
+    <string name="item_empty_clipboard_by_timeout">Empty clipboard by timeout</string>
+    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+    <string name="action_save">Save</string>
+
+    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">It\'s a bit lonely here...</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Get started by adding a pet</string>
+    <string name="action_delete">Delete</string>
+
+    <string name="editor_delete_pet_successful">Pet deleted</string>
+    <string name="editor_delete_pet_failed">Error with deleting pet</string>
+    <string name="delete_dialog_msg">Delete this pet?</string>
+    <string name="delete">Delete</string>
+    <string name="action_delete_all_entries">Delete all entries</string>
 </resources>

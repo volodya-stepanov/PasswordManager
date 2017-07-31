@@ -5,9 +5,15 @@
 
     <!--Blue 900-->
     <color name="colorPrimaryDark">#0D47A1</color>
-    <color name="colorAccent">#E63B2E</color>
+    <color name="colorAccent">#0091EA</color>
+    <color name="colorRed">#E63B2E</color>
 
     <!--Light Blue A700-->
     <color name="dot_light">#0091EA</color>
     <color name="dot_dark">#717171</color>
 </resources>
+<!--Заголовок: SafeInCloud-->
+
+<!--При этом открыта SetupActivity и видна клавиатура. При нажатии кнопки ОК операция закрывается, появляется MainActivity и AlertDialog с заголовком "Синхронизация"-->
+
+<!--Настроить синхронизацию с облаком?-->
