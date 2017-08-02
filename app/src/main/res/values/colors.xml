@@ -11,6 +11,8 @@
     <!--Light Blue A700-->
     <color name="dot_light">#0091EA</color>
     <color name="dot_dark">#717171</color>
+
+    <color name="light_gray">#e0e0e0</color>
 </resources>
 <!--Заголовок: SafeInCloud-->
 

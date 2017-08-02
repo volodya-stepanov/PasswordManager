@@ -4,37 +4,109 @@
     android:id="@+id/activity_editor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:layout_marginTop="16dp"
     tools:context="com.razrabotkin.android.passwordmanager.EditorActivity">
 
-    <EditText
-        android:id="@+id/edit_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Название"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
 
-    <EditText
-        android:id="@+id/edit_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Логин"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_text_name"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="20sp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:maxLines="1"/>
 
-    <EditText
-        android:id="@+id/edit_password"
+        <ImageView
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/simple_circle"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Пароль"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_text_login"
+                android:fontFamily="sans-serif-medium"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="20dp"/>
+
+            <EditText
+                android:id="@+id/edit_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_text_login"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="1"/>
+        </LinearLayout>
+
+        <!--//TODO: Сюда потом нужно будет вставить дополнительные иконки: люди, ключ, крестик и т.д.-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_text_password"
+                android:fontFamily="sans-serif-medium"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="20dp"/>
+
+            <EditText
+                android:id="@+id/edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_text_password"
+                android:maxLines="1"
+                android:inputType="textPassword"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <!--//TODO: Сюда потом нужно будет вставить дополнительные иконки: люди, ключ, крестик и т.д.-->
+    </LinearLayout>
 </LinearLayout>
