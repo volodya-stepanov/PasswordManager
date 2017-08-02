@@ -26,6 +26,8 @@ public final class PasswordContract {
         public final static String COLUMN_NAME = "name";
         public final static String COLUMN_LOGIN = "login";
         public final static String COLUMN_PASSWORD = "password";
+        public final static String COLUMN_WEBSITE = "website";
+        public final static String COLUMN_NOTE = "note";
 
         /**
          * MIME-тип {@link #CONTENT_URI} для списка паролей.

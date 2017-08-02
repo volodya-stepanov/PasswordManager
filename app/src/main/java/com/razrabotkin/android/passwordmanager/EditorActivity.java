@@ -32,6 +32,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mNameEditText;
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
+    private EditText mWebsiteEditText;
+    private EditText mNoteEditText;
 
     private boolean mCardHasChanged = false;
 
@@ -68,10 +70,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mNameEditText = (EditText) findViewById(R.id.edit_name);
         mLoginEditText = (EditText) findViewById(R.id.edit_login);
         mPasswordEditText = (EditText) findViewById(R.id.edit_password);
+        mWebsiteEditText = (EditText) findViewById(R.id.edit_website);
+        mNoteEditText = (EditText) findViewById(R.id.edit_note);
 
         mNameEditText.setOnTouchListener(mTouchListener);
         mLoginEditText.setOnTouchListener(mTouchListener);
         mPasswordEditText.setOnTouchListener(mTouchListener);
+        mWebsiteEditText.setOnTouchListener(mTouchListener);
+        mNoteEditText.setOnTouchListener(mTouchListener);
 
         if (mCurrentPasswordUri != null) {
             // Инициализируем загрузчик
@@ -88,10 +94,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String nameString = mNameEditText.getText().toString().trim();
         String loginString = mLoginEditText.getText().toString().trim();
         String passwordString = mPasswordEditText.getText().toString().trim();
+        String websiteString = mWebsiteEditText.getText().toString().trim();
+        String noteString = mNoteEditText.getText().toString().trim();
 
         if (mCurrentPasswordUri == null &&
                 TextUtils.isEmpty(nameString) && TextUtils.isEmpty(loginString) &&
-                TextUtils.isEmpty(passwordString)) {
+                TextUtils.isEmpty(passwordString) && TextUtils.isEmpty(websiteString) && TextUtils.isEmpty(noteString)) {
             return;
         }
 
@@ -101,6 +109,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(PasswordContract.PasswordEntry.COLUMN_NAME, nameString);
         values.put(PasswordContract.PasswordEntry.COLUMN_LOGIN, loginString);
         values.put(PasswordContract.PasswordEntry.COLUMN_PASSWORD, passwordString);
+        values.put(PasswordContract.PasswordEntry.COLUMN_WEBSITE, websiteString);
+        values.put(PasswordContract.PasswordEntry.COLUMN_NOTE, noteString);
 
         // Если URI контента текущей записи равно null, добавляем новую запись в базу
         if (mCurrentPasswordUri == null) {
@@ -194,7 +204,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 PasswordContract.PasswordEntry._ID,
                 PasswordContract.PasswordEntry.COLUMN_NAME,
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
-                PasswordContract.PasswordEntry.COLUMN_PASSWORD
+                PasswordContract.PasswordEntry.COLUMN_PASSWORD,
+                PasswordContract.PasswordEntry.COLUMN_WEBSITE,
+                PasswordContract.PasswordEntry.COLUMN_NOTE
         };
 
         // Этот загрузчик выполнит метод query контент-провайдера в фоновом потоке
@@ -215,16 +227,22 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             int nameColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NAME);
             int loginColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_LOGIN);
             int passwordColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_PASSWORD);
+            int websiteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_WEBSITE);
+            int noteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NOTE);
 
             // Извлекаем из курсора значение по данному индексу колонки
             String name = cursor.getString(nameColumnIndex);
             String login = cursor.getString(loginColumnIndex);
             String password = cursor.getString(passwordColumnIndex);
+            String website = cursor.getString(websiteColumnIndex);
+            String note = cursor.getString(noteColumnIndex);
 
             // Обновляем представление на экране значениями из базы данных
             mNameEditText.setText(name);
             mLoginEditText.setText(login);
             mPasswordEditText.setText(password);
+            mWebsiteEditText.setText(website);
+            mNoteEditText.setText(note);
         }
     }
 
@@ -234,6 +252,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mNameEditText.setText("");
         mLoginEditText.setText("");
         mPasswordEditText.setText("");
+        mWebsiteEditText.setText("");
+        mNoteEditText.setText("");
     }
 
     private void showUnsavedChangesDialog(

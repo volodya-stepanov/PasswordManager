@@ -73,7 +73,9 @@
     <string name="delete_dialog_msg">Delete this pet?</string>
     <string name="delete">Delete</string>
     <string name="action_delete_all_entries">Delete all entries</string>
-    <string name="edit_text_name">Название</string>
-    <string name="edit_text_login">Логин</string>
-    <string name="edit_text_password">Пароль</string>
+    <string name="edit_text_name">Name</string>
+    <string name="edit_text_login">Login</string>
+    <string name="edit_text_website">Website</string>
+    <string name="edit_text_notes">Notes</string>
+    <string name="edit_text_password">Password</string>
 </resources>

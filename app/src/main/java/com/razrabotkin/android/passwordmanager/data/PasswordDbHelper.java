@@ -30,7 +30,9 @@ public class PasswordDbHelper extends SQLiteOpenHelper {
                 + PasswordEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + PasswordEntry.COLUMN_NAME + " TEXT NOT NULL, "
                 + PasswordEntry.COLUMN_LOGIN + " TEXT NOT NULL, "
-                + PasswordEntry.COLUMN_PASSWORD + " TEXT NOT NULL);";
+                + PasswordEntry.COLUMN_PASSWORD + " TEXT NOT NULL, "
+                + PasswordEntry.COLUMN_WEBSITE + " TEXT, "
+                + PasswordEntry.COLUMN_NOTE + " TEXT);";
 
         db.execSQL(SQL_CREATE_PASSWORDS_TABLE);
     }
