@@ -46,8 +46,9 @@
             android:parentActivityName=".PasswordActivity" />
         <activity
             android:name=".EditorActivity"
-            android:theme="@style/AppTheme"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+
             <!-- Метаданные родительской операции для поддержки 4.0 и ниже -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -59,6 +60,7 @@
             android:authorities="com.razrabotkin.android.passwordmanager"
             android:exported="false" />
 
+        <activity android:name=".ViewerActivity"></activity>
     </application>
 
 </manifest>

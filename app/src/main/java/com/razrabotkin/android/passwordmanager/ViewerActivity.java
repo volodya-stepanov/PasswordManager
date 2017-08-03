@@ -17,23 +17,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
-public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ViewerActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int EXISTING_PASSWORD_LOADER = 0;
     /**
      * URI контента для существующего пароля (null если это новый пароль)
      */
     private Uri mCurrentPasswordUri;
-    private EditText mNameEditText;
-    private EditText mLoginEditText;
-    private EditText mPasswordEditText;
-    private EditText mWebsiteEditText;
-    private EditText mNoteEditText;
+    private TextView mNameTextView;
+    private TextView mLoginTextView;
+    private TextView mPasswordTextView;
+    private TextView mWebsiteTextView;
+    private TextView mNoteTextView;
 
     private boolean mCardHasChanged = false;
 
@@ -47,7 +47,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editor);
+        setContentView(R.layout.activity_viewer);
 
         // Проверяем интент, запустивший эту операцию,
         // чтобы выяснить, создаём мы новую запись или редактируем существующую.
@@ -67,17 +67,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle("Редактирование карты");
         }
 
-        mNameEditText = (EditText) findViewById(R.id.edit_name);
-        mLoginEditText = (EditText) findViewById(R.id.edit_login);
-        mPasswordEditText = (EditText) findViewById(R.id.edit_password);
-        mWebsiteEditText = (EditText) findViewById(R.id.edit_website);
-        mNoteEditText = (EditText) findViewById(R.id.edit_note);
+        mNameTextView = (TextView) findViewById(R.id.edit_name);
+        mLoginTextView = (TextView) findViewById(R.id.edit_login);
+        mPasswordTextView = (TextView) findViewById(R.id.edit_password);
+        mWebsiteTextView = (TextView) findViewById(R.id.edit_website);
+        mNoteTextView = (TextView) findViewById(R.id.edit_note);
 
-        mNameEditText.setOnTouchListener(mTouchListener);
-        mLoginEditText.setOnTouchListener(mTouchListener);
-        mPasswordEditText.setOnTouchListener(mTouchListener);
-        mWebsiteEditText.setOnTouchListener(mTouchListener);
-        mNoteEditText.setOnTouchListener(mTouchListener);
+//        mNameTextView.setOnTouchListener(mTouchListener);
+//        mLoginEditText.setOnTouchListener(mTouchListener);
+//        mPasswordEditText.setOnTouchListener(mTouchListener);
+//        mWebsiteEditText.setOnTouchListener(mTouchListener);
+//        mNoteEditText.setOnTouchListener(mTouchListener);
 
         if (mCurrentPasswordUri != null) {
             // Инициализируем загрузчик
@@ -91,11 +91,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private void savePassword() {
         // Считываем данные из полей ввода
         // Используем метод trim(), чтобы удалить лишние пробелы
-        String nameString = mNameEditText.getText().toString().trim();
-        String loginString = mLoginEditText.getText().toString().trim();
-        String passwordString = mPasswordEditText.getText().toString().trim();
-        String websiteString = mWebsiteEditText.getText().toString().trim();
-        String noteString = mNoteEditText.getText().toString().trim();
+        String nameString = mNameTextView.getText().toString().trim();
+        String loginString = mLoginTextView.getText().toString().trim();
+        String passwordString = mPasswordTextView.getText().toString().trim();
+        String websiteString = mWebsiteTextView.getText().toString().trim();
+        String noteString = mNoteTextView.getText().toString().trim();
 
         if (mCurrentPasswordUri == null &&
                 TextUtils.isEmpty(nameString) && TextUtils.isEmpty(loginString) &&
@@ -171,7 +171,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 // Если запись не изменена, продолжаем навигацию вверх к родительской операции
                 // {@link CatalogActivity}.
                 if (!mCardHasChanged) {
-                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    NavUtils.navigateUpFromSameTask(ViewerActivity.this);
                     return true;
                 }
 
@@ -182,7 +182,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 // User clicked "Discard" button, navigate to parent activity.
-                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                                NavUtils.navigateUpFromSameTask(ViewerActivity.this);
                             }
                         };
 
@@ -238,22 +238,22 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             String note = cursor.getString(noteColumnIndex);
 
             // Обновляем представление на экране значениями из базы данных
-            mNameEditText.setText(name);
-            mLoginEditText.setText(login);
-            mPasswordEditText.setText(password);
-            mWebsiteEditText.setText(website);
-            mNoteEditText.setText(note);
+            mNameTextView.setText(name);
+            mLoginTextView.setText(login);
+            mPasswordTextView.setText(password);
+            mWebsiteTextView.setText(website);
+            mNoteTextView.setText(note);
         }
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
         // Очищаем поля
-        mNameEditText.setText("");
-        mLoginEditText.setText("");
-        mPasswordEditText.setText("");
-        mWebsiteEditText.setText("");
-        mNoteEditText.setText("");
+        mNameTextView.setText("");
+        mLoginTextView.setText("");
+        mPasswordTextView.setText("");
+        mWebsiteTextView.setText("");
+        mNoteTextView.setText("");
     }
 
     private void showUnsavedChangesDialog(

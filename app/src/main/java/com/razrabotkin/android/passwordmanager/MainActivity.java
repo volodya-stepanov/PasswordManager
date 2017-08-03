@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity
         cardsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // Создаём новый интент для перехода к {@link EditorActivity}
-                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                // Создаём новый интент для перехода к {@link ViewerActivity}
+                Intent intent = new Intent(MainActivity.this, ViewerActivity.class);
 
                 // Формируем URI контента, который представляет конкретную карту, которую мы щёлкнули,
                 // прикрепляя id (переданный в качестве входного параметра в этот метод) к
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
                 // Устанавливаем URI в качестве значения поля Data интента
                 intent.setData(currentCardUri);
 
-                // Запускаем {@link EditorActivity}, чтобы отобразить данные выбранной карты
+                // Запускаем {@link ViewerActivity}, чтобы отобразить данные выбранной карты
                 startActivity(intent);
             }
         });

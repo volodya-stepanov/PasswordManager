@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_viewer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="16dp"
+    tools:context="com.razrabotkin.android.passwordmanager.ViewerActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_text_name"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="20sp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:maxLines="1"/>
+
+        <ImageView
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/simple_circle"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_text_login"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"/>
+
+            <TextView
+                android:id="@+id/edit_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_text_login"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="1"
+                android:inputType="text"/>
+        </LinearLayout>
+
+        <!--//TODO: Сюда потом нужно будет вставить дополнительные иконки: люди, ключ, крестик и т.д.-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_text_password"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"/>
+
+            <TextView
+                android:id="@+id/edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_text_password"
+                android:maxLines="1"
+                android:inputType="textVisiblePassword"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                android:textSize="16sp"/>
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="20dp">
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <View
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="4dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <View
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="4dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <View
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="4dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <View
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="4dp"
+                        android:background="@android:color/darker_gray"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textAlignment="center"
+                    android:text="Время взлома"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--//TODO: Сюда потом нужно будет вставить дополнительные иконки: люди, ключ, крестик и т.д.-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_text_website"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"/>
+
+            <TextView
+                android:id="@+id/edit_website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_text_website"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="1"
+                android:inputType="text"/>
+        </LinearLayout>
+
+        <!--//TODO: Сюда потом нужно будет вставить дополнительные иконки: люди, ключ, крестик и т.д.-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_text_notes"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"/>
+
+            <TextView
+                android:id="@+id/edit_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_text_notes"
+                android:fontFamily="sans-serif"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="1"
+                android:inputType="text"/>
+        </LinearLayout>
+
+        <!--//TODO: Сюда потом нужно будет вставить дополнительные иконки: люди, ключ, крестик и т.д.-->
+    </LinearLayout>
+</LinearLayout>
