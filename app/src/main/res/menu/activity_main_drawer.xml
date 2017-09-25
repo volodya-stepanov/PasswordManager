@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_all_cards"
-            android:icon="@drawable/ic_apps_black_24dp"
+            android:icon="@drawable/ic_grid_black_24dp"
             android:title="@string/menu_item_all_cards" />
         <item
             android:id="@+id/nav_favorites"
@@ -14,19 +14,19 @@
         <!--Иконка tag-->
         <item
             android:id="@+id/nav_web_accounts"
-            android:icon="@drawable/ic_star_black_24dp"
+            android:icon="@drawable/ic_tag_black_24dp"
             android:title="@string/menu_item_web_accounts" />
         <item
             android:id="@+id/nav_delovye"
-            android:icon="@drawable/ic_star_black_24dp"
+            android:icon="@drawable/ic_tag_black_24dp"
             android:title="@string/menu_item_delovye" />
         <item
             android:id="@+id/nav_examples"
-            android:icon="@drawable/ic_star_black_24dp"
+            android:icon="@drawable/ic_tag_black_24dp"
             android:title="@string/menu_item_examples" />
         <item
             android:id="@+id/nav_private"
-            android:icon="@drawable/ic_star_black_24dp"
+            android:icon="@drawable/ic_tag_black_24dp"
             android:title="@string/menu_item_private" />
         <!--Иконка Восклицательный знак в кружке-->
         <item
@@ -40,11 +40,11 @@
 
         <item
             android:id="@+id/nav_unlabeled"
-            android:icon="@drawable/ic_star_black_24dp"
+            android:icon="@drawable/ic_tag_black_off_24dp"
             android:title="@string/menu_item_unlabeled" />
         <item
             android:id="@+id/nav_templates"
-            android:icon="@drawable/ic_star_black_24dp"
+            android:icon="@drawable/ic_templates_black_24dp"
             android:title="@string/menu_item_templates" />
         <item
             android:id="@+id/nav_trash"
