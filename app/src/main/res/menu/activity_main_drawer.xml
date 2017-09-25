@@ -3,33 +3,66 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_all_cards"
+            android:icon="@drawable/ic_apps_black_24dp"
+            android:title="@string/menu_item_all_cards" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_favorites"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/menu_item_favorites" />
+
+        <!--Иконка tag-->
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/nav_web_accounts"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/menu_item_web_accounts" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_delovye"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/menu_item_delovye" />
+        <item
+            android:id="@+id/nav_examples"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/menu_item_examples" />
+        <item
+            android:id="@+id/nav_private"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/menu_item_private" />
+        <!--Иконка Восклицательный знак в кружке-->
+        <item
+            android:id="@+id/nav_weak_passwords"
+            android:icon="@drawable/ic_error_black_24dp"
+            android:title="@string/menu_item_weak_passwords" />
+        <item
+            android:id="@+id/nav_same_passwords"
+            android:icon="@drawable/ic_error_black_24dp"
+            android:title="@string/menu_item_same_passwords" />
+
+        <item
+            android:id="@+id/nav_unlabeled"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/menu_item_unlabeled" />
+        <item
+            android:id="@+id/nav_templates"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/menu_item_templates" />
+        <item
+            android:id="@+id/nav_trash"
+            android:icon="@drawable/ic_delete_black_24dp"
+            android:title="@string/menu_item_trash" />
+
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_manage_labels"
+                android:icon="@drawable/ic_create_black_24dp"
+                android:title="@string/menu_item_manage_labels" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="@string/menu_item_settings" />
         </menu>
     </item>
 

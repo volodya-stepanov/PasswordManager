@@ -58,4 +58,21 @@
     <string name="edit_text_notes">Заметки</string>
     <string name="edit_text_password">Пароль</string>
     <string name="edit_text_website">Веб-сайт</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_share">Share</string>
+
+    <string name="text_view_not_authenticated">Не авторизовано</string>
+    <string name="menu_item_all_cards">Все карты</string>
+    <string name="menu_item_favorites">Избранное</string>
+    <string name="menu_item_web_accounts">Веб-аккаунты</string>
+    <string name="menu_item_delovye">Деловые</string>
+    <string name="menu_item_examples">Примеры</string>
+    <string name="menu_item_private">Частные</string>
+    <string name="menu_item_weak_passwords">Слабые пароли</string>
+    <string name="menu_item_same_passwords">Одинаковые пароли</string>
+    <string name="menu_item_unlabeled">Без ярлыка</string>
+    <string name="menu_item_templates">Шаблоны</string>
+    <string name="menu_item_trash">Удаленные</string>
+    <string name="menu_item_manage_labels">Ярлыки</string>
+    <string name="menu_item_settings">Настройки</string>
 </resources>

@@ -2,7 +2,10 @@ package com.razrabotkin.android.passwordmanager;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,40 +13,52 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
-public class ViewerActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class ViewerActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int EXISTING_PASSWORD_LOADER = 0;
     /**
      * URI контента для существующего пароля (null если это новый пароль)
      */
-    private Uri mCurrentPasswordUri;
+    private Uri mCurrentCardUri;
     private TextView mNameTextView;
     private TextView mLoginTextView;
     private TextView mPasswordTextView;
     private TextView mWebsiteTextView;
     private TextView mNoteTextView;
+    private ImageButton mShowPasswordImageButton;
+    private LinearLayout mLinearLayout; // Для Snackbar
+    private TextView mChangedAtTextView;
+    private ToggleButton mFavoriteToggleButton;
 
-    private boolean mCardHasChanged = false;
+    private boolean mShowPassword = true;
 
-    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            mCardHasChanged = true;
-            return false;
-        }
-    };
+    //private boolean mCardHasChanged = false;
+
+//    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+//        @Override
+//        public boolean onTouch(View view, MotionEvent motionEvent) {
+//            mCardHasChanged = true;
+//            return false;
+//        }
+//    };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,19 +67,21 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         // Проверяем интент, запустивший эту операцию,
         // чтобы выяснить, создаём мы новую запись или редактируем существующую.
         Intent intent = getIntent();
-        mCurrentPasswordUri = intent.getData();
+        mCurrentCardUri = intent.getData();
 
         // Если интент НЕ содержит URI контента, мы знаем, что создаём новую карту.
-        if (mCurrentPasswordUri == null) {
+        if (mCurrentCardUri == null) {
             // Это новая карта, поэтому меняем App Bar на "Создание карты"
-            setTitle("Создание карты");
+            //setTitle("Создание карты");
+            setTitle("");
 
             // Лишаем законной силы меню опций чтобы пункт "Удалить" можно было скрыть.
             // (Не имеет смысла удалять запись, которая ещё не создана)
             invalidateOptionsMenu();
         } else {
             // Иначе это существующая карта, поэтому меняем App Bar на "Редактирование карты"-
-            setTitle("Редактирование карты");
+            //setTitle("Редактирование карты");
+            setTitle("");
         }
 
         mNameTextView = (TextView) findViewById(R.id.edit_name);
@@ -72,6 +89,10 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         mPasswordTextView = (TextView) findViewById(R.id.edit_password);
         mWebsiteTextView = (TextView) findViewById(R.id.edit_website);
         mNoteTextView = (TextView) findViewById(R.id.edit_note);
+        mShowPasswordImageButton = (ImageButton) findViewById(R.id.show_password_image_button);
+        mLinearLayout = (LinearLayout) findViewById(R.id.activity_viewer);
+        mChangedAtTextView = (TextView) findViewById(R.id.text_view_changed_at);
+        mFavoriteToggleButton = (ToggleButton) findViewById(R.id.toggle_button_favorite);
 
 //        mNameTextView.setOnTouchListener(mTouchListener);
 //        mLoginEditText.setOnTouchListener(mTouchListener);
@@ -79,73 +100,15 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
 //        mWebsiteEditText.setOnTouchListener(mTouchListener);
 //        mNoteEditText.setOnTouchListener(mTouchListener);
 
-        if (mCurrentPasswordUri != null) {
+        if (mCurrentCardUri != null) {
             // Инициализируем загрузчик
             getLoaderManager().initLoader(EXISTING_PASSWORD_LOADER, null, this);
         }
     }
 
-    /**
-     * Получает данные, введённые пользователем, и сохраняет их в базу данных
-     */
-    private void savePassword() {
-        // Считываем данные из полей ввода
-        // Используем метод trim(), чтобы удалить лишние пробелы
-        String nameString = mNameTextView.getText().toString().trim();
-        String loginString = mLoginTextView.getText().toString().trim();
-        String passwordString = mPasswordTextView.getText().toString().trim();
-        String websiteString = mWebsiteTextView.getText().toString().trim();
-        String noteString = mNoteTextView.getText().toString().trim();
-
-        if (mCurrentPasswordUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(loginString) &&
-                TextUtils.isEmpty(passwordString) && TextUtils.isEmpty(websiteString) && TextUtils.isEmpty(noteString)) {
-            return;
-        }
-
-        // Создаем объект ContentValues, в котором имена колонок - ключи,
-        // а атрибуты записи - значения из редактора.
-        ContentValues values = new ContentValues();
-        values.put(PasswordContract.PasswordEntry.COLUMN_NAME, nameString);
-        values.put(PasswordContract.PasswordEntry.COLUMN_LOGIN, loginString);
-        values.put(PasswordContract.PasswordEntry.COLUMN_PASSWORD, passwordString);
-        values.put(PasswordContract.PasswordEntry.COLUMN_WEBSITE, websiteString);
-        values.put(PasswordContract.PasswordEntry.COLUMN_NOTE, noteString);
-
-        // Если URI контента текущей записи равно null, добавляем новую запись в базу
-        if (mCurrentPasswordUri == null) {
-            // Вставляем новую строку в провайдер, возвращаем URI контента.
-            Uri newUri = getContentResolver().insert(PasswordContract.PasswordEntry.CONTENT_URI, values);
-
-            // Отображаем сообщение-тост в зависимости от успешности вставки
-            if (newUri == null) {
-                // Если URI контента равно null, значит, произошла ошибка при вставке.
-                Toast.makeText(this, "Произошла ошибка при сохранении", Toast.LENGTH_SHORT).show();
-            } else {
-                // Иначе вставка прошла успешно
-                Toast.makeText(this, "Запись сохранена", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            // Иначе это существующая запись, поэтому обновляем запись с URI контента равным mCurrentPasswordUri
-            // и передаем в Content Values. Передаем null для аргументов selection и selection args,
-            // потому что mCurrentPasswordUri уже идентифицирует нужную строку в базе данных,
-            // которую мы хотим изменить
-            int rowsAffected = getContentResolver().update(mCurrentPasswordUri, values, null, null);
-
-            // Отображаем сообщение-тост в зависимости от успешности вставки
-            if (rowsAffected == 0) {
-                // Если ни одна строка не была обновлена, значит, возникла ошибка при обновлении.
-                Toast.makeText(this, "Произошла ошибка при сохранении", Toast.LENGTH_SHORT).show();
-            } else {
-                // Иначе обновление прошло успешно
-                Toast.makeText(this, "Запись сохранена", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        getMenuInflater().inflate(R.menu.menu_viewer, menu);
         return true;
     }
 
@@ -153,7 +116,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         // Если это новая запись, скрываем пункт меню "Удалить"
-        if (mCurrentPasswordUri == null) {
+        if (mCurrentCardUri == null) {
             MenuItem menuItem = menu.findItem(R.id.action_delete);
             menuItem.setVisible(false);
         }
@@ -163,37 +126,27 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_save:
-                savePassword();
-                finish();
-                return true;
-            case android.R.id.home:
-                // Если запись не изменена, продолжаем навигацию вверх к родительской операции
-                // {@link CatalogActivity}.
-                if (!mCardHasChanged) {
-                    NavUtils.navigateUpFromSameTask(ViewerActivity.this);
-                    return true;
-                }
-
-                // В противном случае, если есть несохранённые изменения, настраиваем диалог для предупреждения пользователя.
-                // Создаём обработчик нажатия, чтобы обработать подтверждение пользователем отмены изменений.
-                DialogInterface.OnClickListener discardButtonClickListener =
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // User clicked "Discard" button, navigate to parent activity.
-                                NavUtils.navigateUpFromSameTask(ViewerActivity.this);
-                            }
-                        };
-
-                // Показываем диалог о том, что есть несохраненные изменения
-                showUnsavedChangesDialog(discardButtonClickListener);
+            case R.id.action_edit:
+                openEditor();
                 return true;
             case R.id.action_delete:
                 // Отображаем диалог подтверждения удаления
                 showDeleteConfirmationDialog();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Открывает {@link EditorActivity} для данной записи
+     */
+    private void openEditor() {
+        // Запускаем EditorActivity, куда пробрасываем текущий Uri,
+        // как это было сделано в MainActivity при запуске этой операции (EditorActivity)
+        //TODO: Убрать проверку на нулевой URI, здесь не может быть нулевого URI
+        //TODO: Назначить вызываемой операции нужного родителя
+        Intent intent = new Intent(ViewerActivity.this, EditorActivity.class);
+        intent.setData(mCurrentCardUri);
+        startActivity(intent);
     }
 
     @Override
@@ -206,12 +159,14 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
                 PasswordContract.PasswordEntry.COLUMN_PASSWORD,
                 PasswordContract.PasswordEntry.COLUMN_WEBSITE,
-                PasswordContract.PasswordEntry.COLUMN_NOTE
+                PasswordContract.PasswordEntry.COLUMN_NOTE,
+                PasswordContract.PasswordEntry.COLUMN_CHANGED_AT,
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
         };
 
         // Этот загрузчик выполнит метод query контент-провайдера в фоновом потоке
         return new CursorLoader(this,   // Контекст родительской операции
-                mCurrentPasswordUri,    // URI контента запроса для текущей карты
+                mCurrentCardUri,    // URI контента запроса для текущей карты
                 projection,             // Колонки, включаемые в курсор-результат
                 null,
                 null,
@@ -229,6 +184,9 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             int passwordColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_PASSWORD);
             int websiteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_WEBSITE);
             int noteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NOTE);
+            int changedAtColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_CHANGED_AT);
+            int isFavoriteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE);
+            //TODO: Вот здесь нужно преобразовать дату и признак избранности
 
             // Извлекаем из курсора значение по данному индексу колонки
             String name = cursor.getString(nameColumnIndex);
@@ -236,6 +194,34 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             String password = cursor.getString(passwordColumnIndex);
             String website = cursor.getString(websiteColumnIndex);
             String note = cursor.getString(noteColumnIndex);
+            String changedAt = cursor.getString(changedAtColumnIndex);
+
+            //boolean isFavorite;
+
+            if (cursor.getInt(isFavoriteColumnIndex) == 0) {
+                //isFavorite = false;
+                mFavoriteToggleButton.setChecked(false);
+            } else {
+                //isFavorite = true;
+                mFavoriteToggleButton.setChecked(true);
+            }
+
+            // Создаем новый SimpleDateFormat, в котором указываем исходный формат, в котором хранится дата
+            SimpleDateFormat format1 = new SimpleDateFormat();
+            format1.applyPattern("yyyy-MM-dd HH:mm:ss.sss");
+
+            // Создаем новый SimpleDateFormat, в котором указываем формат, в который необходимо преобразовать дату
+            SimpleDateFormat format2 = new SimpleDateFormat();
+            format2.applyPattern("dd.MM.yyyy HH:mm");
+
+            Date date1;
+            try {
+                date1 = format1.parse(changedAt);       // Преобразуем значение из базы данных в дату с использованием формата 1
+                String date2 = format2.format(date1);    // Форматируем полученную дату с использованием формата 2 и преобразуе её обратно в строку
+                mChangedAtTextView.setText("Изменено: " + date2);   //TODO: Добавить строковый ресурс				// Присваиваем элементу mChangedAtTextView строку с новой датой
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             // Обновляем представление на экране значениями из базы данных
             mNameTextView.setText(name);
@@ -243,6 +229,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             mPasswordTextView.setText(password);
             mWebsiteTextView.setText(website);
             mNoteTextView.setText(note);
+
         }
     }
 
@@ -254,6 +241,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         mPasswordTextView.setText("");
         mWebsiteTextView.setText("");
         mNoteTextView.setText("");
+        mFavoriteToggleButton.setChecked(false);
     }
 
     private void showUnsavedChangesDialog(
@@ -278,28 +266,28 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         alertDialog.show();
     }
 
-    @Override
-    public void onBackPressed() {
-        // Если запись не изменна, продолжаем обработку нажатия кнопки Назад
-        if (!mCardHasChanged) {
-            super.onBackPressed();
-            return;
-        }
-
-        // В противном случае, если есть несохранённые изменения, настраиваем диалог для предупреждения пользователя.
-        // Создаём обработчик нажатия, чтобы обработать подтверждение пользователем отмены изменений.
-        DialogInterface.OnClickListener discardButtonClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Пользователь нажал кнопку "Отменить", закрываем текущую операцию.
-                        finish();
-                    }
-                };
-
-        // Показываем диалог о том, что есть несохраненные изменения
-        showUnsavedChangesDialog(discardButtonClickListener);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        // Если запись не изменна, продолжаем обработку нажатия кнопки Назад
+//        if (!mCardHasChanged) {
+//            super.onBackPressed();
+//            return;
+//        }
+//
+//        // В противном случае, если есть несохранённые изменения, настраиваем диалог для предупреждения пользователя.
+//        // Создаём обработчик нажатия, чтобы обработать подтверждение пользователем отмены изменений.
+//        DialogInterface.OnClickListener discardButtonClickListener =
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        // Пользователь нажал кнопку "Отменить", закрываем текущую операцию.
+//                        finish();
+//                    }
+//                };
+//
+//        // Показываем диалог о том, что есть несохраненные изменения
+//        showUnsavedChangesDialog(discardButtonClickListener);
+//    }
 
     private void showDeleteConfirmationDialog() {
         // Создаём AlertDialog.Builder и устанавливаем сообщение и обработчики нажатий
@@ -332,11 +320,11 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
      */
     private void deletePassword() {
         // Осуществляем удаление, только если это существующая запись
-        if (mCurrentPasswordUri != null) {
+        if (mCurrentCardUri != null) {
             // Вызываем ContentResolver чтобы удалить запись по данному URI контента.
-            // Передаем null в аргументы selection and selection args потому что mCurrentPasswordUri
+            // Передаем null в аргументы selection and selection args потому что mCurrentCardUri
             // уже идентифицирует новую запись.
-            int rowsDeleted = getContentResolver().delete(mCurrentPasswordUri, null, null);
+            int rowsDeleted = getContentResolver().delete(mCurrentCardUri, null, null);
 
             // Отображаем сообщение-тост в зависимости от того, успешно ли удаление
             if (rowsDeleted == 0) {
@@ -352,5 +340,127 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             // Завершаем операцию
             finish();
         }
+    }
+
+    /**
+     * Вызывается при нажатии кнопки с глазом "Показывать пароль"
+     *
+     * @param view Кнопка, на которую нажали
+     */
+    public void onShowPasswordImageButtonClick(View view) {
+        ImageButton imageButton = (ImageButton) view;
+        mShowPassword = !mShowPassword;
+        updateTextTypeAndVisibility();
+    }
+
+    public void updateTextTypeAndVisibility() {
+        //TODO: При отображении/скрытии текстового пароля клавиатура не меняется
+        if (mShowPassword) {
+            mPasswordTextView.setInputType(InputType.TYPE_CLASS_TEXT);
+        } else {
+            mPasswordTextView.setInputType(InputType.TYPE_CLASS_TEXT |
+                    InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+    }
+
+    /**
+     * Обработчик события нажатия на макет "Логин". Копирует его в буфер обмена и отображает на экране Snackbar с соответствующей надписью
+     *
+     * @param view Элемент, который был щёлкнут
+     */
+    public void copyLogin(View view) {
+        String login = mLoginTextView.getText().toString();
+        copyToClipboard(login);
+        makeSnackbar();
+    }
+
+    /**
+     * Обработчик события нажатия на макет "Пароль". Копирует его в буфер обмена и отображает на экране Snackbar с соответствующей надписью
+     *
+     * @param view Элемент, который был щёлкнут
+     */
+    public void copyPassword(View view) {
+        String password = mPasswordTextView.getText().toString();
+        copyToClipboard(password);
+        makeSnackbar();
+    }
+
+    /**
+     * Обработчик события нажатия на макет "Веб-сайт". Копирует его в буфер обмена и отображает на экране Snackbar с соответствующей надписью
+     *
+     * @param view Элемент, который был щёлкнут
+     */
+    public void copyWebsite(View view) {
+        String website = mWebsiteTextView.getText().toString();
+        copyToClipboard(website);
+        makeSnackbar();
+    }
+
+    /**
+     * Копирует указанный текст в буфер обмена
+     *
+     * @param text Текст, который необходимо скопировать
+     */
+    private void copyToClipboard(String text) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(text, text);
+        clipboard.setPrimaryClip(clip);
+    }
+
+    /**
+     * Отображает элемент Snackbar с надписью "Текст скопирован"
+     */
+    private void makeSnackbar() {
+        // Создаём snackbar
+        Snackbar snackbar = Snackbar.make(mLinearLayout, "Текст скопирован", Snackbar.LENGTH_LONG);
+
+        // Меняем цвет фона. Напрямую для Snackbar этого сделать нельзя, но можно
+        // получить элемент View, который представляет собой макет этого Snackbar
+        View snackbarView = snackbar.getView();
+
+        // Устанавливаем этому элементу View фоновый цвет
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+        // С атрибутами текста - аналогичная ситуация. Сначала получаем TextView,
+        // который отображается на панели
+        TextView snackTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+
+        // Затем ему можно установить цвет и размер
+        snackTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        //snackTextView.setTextSize(16);
+
+        // Показываем snackbar на экране
+        snackbar.show();
+    }
+
+    /**
+     * Вызывается при нажатии кнопки со звездой
+     *
+     * @param view Элемент, который был щелкнут
+     */
+    public void onFavoriteButtonClick(View view) {
+        boolean isFavorite;
+
+        if (mFavoriteToggleButton.isChecked()) {
+            isFavorite = true;
+        } else {
+            isFavorite = false;
+        }
+
+        updateIsFavorite(isFavorite);
+    }
+
+    /**
+     * Обновляет в базе признак избранности для данной записи
+     *
+     * @param value Новое значение признака избранности
+     */
+    private void updateIsFavorite(boolean value) {
+
+        // Создаем объект ContentValues
+        ContentValues values = new ContentValues();
+        values.put(PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE, value);
+
+        int rowsAffected = getContentResolver().update(mCurrentCardUri, values, null, null);
     }
 }

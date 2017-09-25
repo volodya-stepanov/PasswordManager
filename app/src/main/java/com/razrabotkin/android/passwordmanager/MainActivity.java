@@ -2,7 +2,6 @@ package com.razrabotkin.android.passwordmanager;
 
 import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -152,18 +151,19 @@ public class MainActivity extends AppCompatActivity
      * Добавляет в базу данных фейковую запись
      */
     private void insertPassword() {
-        // Создаем объект ContentValues, в котором имена колонок - ключи,
-        // а атрибуты записи - значения.
-        ContentValues values = new ContentValues();
-        values.put(PasswordContract.PasswordEntry.COLUMN_NAME, "Запись 1");
-        values.put(PasswordContract.PasswordEntry.COLUMN_LOGIN, "User");
-        values.put(PasswordContract.PasswordEntry.COLUMN_PASSWORD, "Password");
-
-        // Вставляем новую строку в провайдер с помощью контент-резолвера.
-        // Используем {@link PasswordEntry#CONTENT_URI}, чтобы обозначить, что мы хотим вставить
-        // в таблицу паролей.
-        // Получаем новый URI контента, который в будущем позволит нам получить доступ к этой тестовой записи.
-        Uri newUri = getContentResolver().insert(PasswordContract.PasswordEntry.CONTENT_URI, values);
+        //TODO: Удалить этот метод и удалить пункт меню Insert Dummy Data
+//        // Создаем объект ContentValues, в котором имена колонок - ключи,
+//        // а атрибуты записи - значения.
+//        ContentValues values = new ContentValues();
+//        values.put(PasswordContract.PasswordEntry.COLUMN_NAME, "Запись 1");
+//        values.put(PasswordContract.PasswordEntry.COLUMN_LOGIN, "User");
+//        values.put(PasswordContract.PasswordEntry.COLUMN_PASSWORD, "Password");
+//
+//        // Вставляем новую строку в провайдер с помощью контент-резолвера.
+//        // Используем {@link PasswordEntry#CONTENT_URI}, чтобы обозначить, что мы хотим вставить
+//        // в таблицу паролей.
+//        // Получаем новый URI контента, который в будущем позволит нам получить доступ к этой тестовой записи.
+//        Uri newUri = getContentResolver().insert(PasswordContract.PasswordEntry.CONTENT_URI, values);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -172,19 +172,19 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//        } else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -198,7 +198,8 @@ public class MainActivity extends AppCompatActivity
         String[] projection = {
                 PasswordContract.PasswordEntry._ID,
                 PasswordContract.PasswordEntry.COLUMN_NAME,
-                PasswordContract.PasswordEntry.COLUMN_LOGIN
+                PasswordContract.PasswordEntry.COLUMN_LOGIN,
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
         };
 
         // Этот загрузчик выполнит метод query в фоновом потоке

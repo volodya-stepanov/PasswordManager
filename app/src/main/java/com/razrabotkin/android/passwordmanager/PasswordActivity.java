@@ -126,7 +126,7 @@ public class PasswordActivity extends AppCompatActivity {
         mPasswordView.setText("");
     }
 
-        /**
+     /**
      * Вызывается при установке/снятии флажка "Показывать пароль"
      * @param view Флажок, на который нажали
      */

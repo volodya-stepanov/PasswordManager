@@ -22,8 +22,12 @@ import android.widget.Toast;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    //TODO: Исправить AppBar
     private static final int EXISTING_PASSWORD_LOADER = 0;
     /**
      * URI контента для существующего пароля (null если это новый пароль)
@@ -57,14 +61,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Если интент НЕ содержит URI контента, мы знаем, что создаём новую карту.
         if (mCurrentPasswordUri == null) {
             // Это новая карта, поэтому меняем App Bar на "Создание карты"
-            setTitle("Создание карты");
+            //TODO: Ещё раз разобраться с правильным назначением заголовка
+            //setTitle("Создание карты");
+            setTitle("");
 
             // Лишаем законной силы меню опций чтобы пункт "Удалить" можно было скрыть.
             // (Не имеет смысла удалять запись, которая ещё не создана)
             invalidateOptionsMenu();
         } else {
             // Иначе это существующая карта, поэтому меняем App Bar на "Редактирование карты"-
-            setTitle("Редактирование карты");
+            //setTitle("Редактирование карты");
+            setTitle("");
         }
 
         mNameEditText = (EditText) findViewById(R.id.edit_name);
@@ -97,6 +104,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String websiteString = mWebsiteEditText.getText().toString().trim();
         String noteString = mNoteEditText.getText().toString().trim();
 
+        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+        String dateString = sdf.format(currentDate);
+        //TODO: Если нет изменений, дата обновляться не должна
+
         if (mCurrentPasswordUri == null &&
                 TextUtils.isEmpty(nameString) && TextUtils.isEmpty(loginString) &&
                 TextUtils.isEmpty(passwordString) && TextUtils.isEmpty(websiteString) && TextUtils.isEmpty(noteString)) {
@@ -111,7 +123,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(PasswordContract.PasswordEntry.COLUMN_PASSWORD, passwordString);
         values.put(PasswordContract.PasswordEntry.COLUMN_WEBSITE, websiteString);
         values.put(PasswordContract.PasswordEntry.COLUMN_NOTE, noteString);
+        values.put(PasswordContract.PasswordEntry.COLUMN_CHANGED_AT, dateString);
 
+        //TODO: Уьрать эти тосты
         // Если URI контента текущей записи равно null, добавляем новую запись в базу
         if (mCurrentPasswordUri == null) {
             // Вставляем новую строку в провайдер, возвращаем URI контента.
@@ -206,7 +220,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
                 PasswordContract.PasswordEntry.COLUMN_PASSWORD,
                 PasswordContract.PasswordEntry.COLUMN_WEBSITE,
-                PasswordContract.PasswordEntry.COLUMN_NOTE
+                PasswordContract.PasswordEntry.COLUMN_NOTE,
+                PasswordContract.PasswordEntry.COLUMN_CHANGED_AT,
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
         };
 
         // Этот загрузчик выполнит метод query контент-провайдера в фоновом потоке
@@ -280,6 +296,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onBackPressed() {
+        //TODO: Возвращаться надо не к MainActivity, а к ViewerActivity
         // Если запись не изменна, продолжаем обработку нажатия кнопки Назад
         if (!mCardHasChanged) {
             super.onBackPressed();

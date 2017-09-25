@@ -32,7 +32,9 @@ public class PasswordDbHelper extends SQLiteOpenHelper {
                 + PasswordEntry.COLUMN_LOGIN + " TEXT NOT NULL, "
                 + PasswordEntry.COLUMN_PASSWORD + " TEXT NOT NULL, "
                 + PasswordEntry.COLUMN_WEBSITE + " TEXT, "
-                + PasswordEntry.COLUMN_NOTE + " TEXT);";
+                + PasswordEntry.COLUMN_NOTE + " TEXT, "
+                + PasswordEntry.COLUMN_CHANGED_AT + " TEXT NOT NULL DEFAULT '1970-01-01 00:00:00.000', "
+                + PasswordEntry.COLUMN_IS_FAVORITE + " INTEGER NOT NULL DEFAULT 0);";
 
         db.execSQL(SQL_CREATE_PASSWORDS_TABLE);
     }

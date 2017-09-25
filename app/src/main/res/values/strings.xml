@@ -78,4 +78,22 @@
     <string name="edit_text_website">Website</string>
     <string name="edit_text_notes">Notes</string>
     <string name="edit_text_password">Password</string>
+    <string name="action_tags">Tags</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_share">Share</string>
+
+    <string name="text_view_not_authenticated">Not authenticated</string>
+    <string name="menu_item_all_cards">All Cards</string>
+    <string name="menu_item_favorites">Favorites</string>
+    <string name="menu_item_web_accounts">Веб-аккаунты</string>
+    <string name="menu_item_delovye">Деловые</string>
+    <string name="menu_item_examples">Примеры</string>
+    <string name="menu_item_private">Частные</string>
+    <string name="menu_item_weak_passwords">Weak Passwords</string>
+    <string name="menu_item_same_passwords">Same Passwords</string>
+    <string name="menu_item_unlabeled">Unlabeled</string>
+    <string name="menu_item_templates">Templates</string>
+    <string name="menu_item_trash">Trash</string>
+    <string name="menu_item_manage_labels">Manage labels</string>
+    <string name="menu_item_settings">Settings</string>
 </resources>
