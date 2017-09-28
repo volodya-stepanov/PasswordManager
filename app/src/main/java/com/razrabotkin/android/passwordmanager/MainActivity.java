@@ -2,6 +2,7 @@ package com.razrabotkin.android.passwordmanager;
 
 import android.app.LoaderManager;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -128,9 +129,6 @@ public class MainActivity extends AppCompatActivity
         switch (id){
             case R.id.action_settings:
                 return true;
-            case R.id.action_insert_dummy_data:
-                insertPassword();
-                return true;
             case R.id.action_delete_all_entries:
                 deleteAllEntries();
                 return true;
@@ -147,36 +145,18 @@ public class MainActivity extends AppCompatActivity
         Log.v("CatalogActivity", rowsDeleted + " rows deleted from database");
     }
 
-    /**
-     * Добавляет в базу данных фейковую запись
-     */
-    private void insertPassword() {
-        //TODO: Удалить этот метод и удалить пункт меню Insert Dummy Data
-//        // Создаем объект ContentValues, в котором имена колонок - ключи,
-//        // а атрибуты записи - значения.
-//        ContentValues values = new ContentValues();
-//        values.put(PasswordContract.PasswordEntry.COLUMN_NAME, "Запись 1");
-//        values.put(PasswordContract.PasswordEntry.COLUMN_LOGIN, "User");
-//        values.put(PasswordContract.PasswordEntry.COLUMN_PASSWORD, "Password");
-//
-//        // Вставляем новую строку в провайдер с помощью контент-резолвера.
-//        // Используем {@link PasswordEntry#CONTENT_URI}, чтобы обозначить, что мы хотим вставить
-//        // в таблицу паролей.
-//        // Получаем новый URI контента, который в будущем позволит нам получить доступ к этой тестовой записи.
-//        Uri newUri = getContentResolver().insert(PasswordContract.PasswordEntry.CONTENT_URI, values);
-    }
-
+    // В этом методе обрабатываются щелчки по пунктам navigation drawer
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.nav_all_cards) {
+            selectAll();
+        } else if (id == R.id.nav_favorites) {
+            selectFavorites();
+        }
+//         else if (id == R.id.nav_slideshow) {
 //
 //        } else if (id == R.id.nav_manage) {
 //
@@ -189,6 +169,49 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Осуществляет выборку из базы объектов с признаком избранности
+     */
+    private void selectFavorites() {
+        // Определяем массив projection, который указывает, какие колонки из базы данных
+        // мы увидим после этого запроса.
+        String[] projection = {
+                PasswordContract.PasswordEntry._ID,
+                PasswordContract.PasswordEntry.COLUMN_NAME,
+                PasswordContract.PasswordEntry.COLUMN_LOGIN,
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+        };
+
+        // Задаём параметр selection, определяющий в запросе условие WHERE
+        String selection = PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE + "=1";
+
+        // Выполняем запрос, получая в результате курсор
+        Cursor cursor = getContentResolver().query(PasswordContract.PasswordEntry.CONTENT_URI, projection, selection, null, null);
+
+        // Вызываем метод swapCursor с полученным курсором, чтобы список обновился
+        mCursorAdapter.swapCursor(cursor);
+    }
+
+    /**
+     * Осуществляет выборку из базы всех записей
+     */
+    private void selectAll() {
+        // Определяем массив projection, который указывает, какие колонки из базы данных
+        // мы увидим после этого запроса.
+        String[] projection = {
+                PasswordContract.PasswordEntry._ID,
+                PasswordContract.PasswordEntry.COLUMN_NAME,
+                PasswordContract.PasswordEntry.COLUMN_LOGIN,
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+        };
+
+        // Выполняем запрос, получая в результате курсор
+        Cursor cursor = getContentResolver().query(PasswordContract.PasswordEntry.CONTENT_URI, projection, null, null, null);
+
+        // Вызываем метод swapCursor с полученным курсором, чтобы список обновился
+        mCursorAdapter.swapCursor(cursor);
     }
 
     @Override
