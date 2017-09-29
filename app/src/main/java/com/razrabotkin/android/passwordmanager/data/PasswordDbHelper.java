@@ -1,6 +1,8 @@
 package com.razrabotkin.android.passwordmanager.data;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -42,5 +44,9 @@ public class PasswordDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    public Cursor searchByInputText(String inputText) throws SQLException {
+        String query = "SELECT " + 
     }
 }
