@@ -75,4 +75,5 @@
     <string name="menu_item_trash">Удаленные</string>
     <string name="menu_item_manage_labels">Ярлыки</string>
     <string name="menu_item_settings">Настройки</string>
+    <string name="empty_view_title_text">Нет карт</string>
 </resources>
