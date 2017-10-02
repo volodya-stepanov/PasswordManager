@@ -45,8 +45,4 @@ public class PasswordDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
-
-    public Cursor searchByInputText(String inputText) throws SQLException {
-        String query = "SELECT " + 
-    }
 }

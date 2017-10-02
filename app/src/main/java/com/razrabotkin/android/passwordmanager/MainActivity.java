@@ -1,13 +1,16 @@
 package com.razrabotkin.android.passwordmanager;
 
 import android.app.LoaderManager;
+import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity
     private static final int PASSWORD_LOADER = 0;
 
     PasswordCursorAdapter mCursorAdapter;
+
+    private final static String TAG= MainActivity.class.getName().toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +123,42 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView search = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            search.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+
+            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    Log.d(TAG, "onQueryTextSubmit ");
+                    getCardsListByKeyword(s);
+//                    if (cursor==null){
+//                        Toast.makeText(MainActivity.this,"No records found!",Toast.LENGTH_LONG).show();
+//                    }else{
+//                        Toast.makeText(MainActivity.this, cursor.getCount() + " records found!",Toast.LENGTH_LONG).show();
+//                    }
+//                    customAdapter.swapCursor(cursor);
+//
+                   return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    Log.d(TAG, "onQueryTextChange ");
+                    getCardsListByKeyword(s);
+//                    if (cursor!=null){
+//                        customAdapter.swapCursor(cursor);
+//                    }
+                    return false;
+                }
+
+            });
+
+        }
+
         return true;
     }
 
@@ -186,6 +229,29 @@ public class MainActivity extends AppCompatActivity
 
         // Задаём параметр selection, определяющий в запросе условие WHERE
         String selection = PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE + "=1";
+
+        // Выполняем запрос, получая в результате курсор
+        Cursor cursor = getContentResolver().query(PasswordContract.PasswordEntry.CONTENT_URI, projection, selection, null, null);
+
+        // Вызываем метод swapCursor с полученным курсором, чтобы список обновился
+        mCursorAdapter.swapCursor(cursor);
+    }
+
+    private void getCardsListByKeyword(String search) {
+        // Определяем массив projection, который указывает, какие колонки из базы данных
+        // мы увидим после этого запроса.
+        String[] projection = {
+                PasswordContract.PasswordEntry._ID,
+                PasswordContract.PasswordEntry.COLUMN_NAME,
+                PasswordContract.PasswordEntry.COLUMN_LOGIN,
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+        };
+
+        // Задаём параметр selection, определяющий в запросе условие WHERE
+        String selection = PasswordContract.PasswordEntry.COLUMN_NAME + " LIKE '%" + search + "%'";
+
+        // Задаём параметр selectionArgs, определяющий значения аргументов
+        String[] selectionArgs = {search};
 
         // Выполняем запрос, получая в результате курсор
         Cursor cursor = getContentResolver().query(PasswordContract.PasswordEntry.CONTENT_URI, projection, selection, null, null);

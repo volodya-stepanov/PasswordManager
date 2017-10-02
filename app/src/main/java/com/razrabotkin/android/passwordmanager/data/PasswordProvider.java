@@ -22,7 +22,7 @@ public class PasswordProvider extends ContentProvider {
     /** Тэг для сообщений лога */
     public static final String LOG_TAG = PasswordProvider.class.getSimpleName();
 
-    private PasswordDbHelper mDbHelper;
+    private com.razrabotkin.android.passwordmanager.data.PasswordDbHelper mDbHelper;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -30,8 +30,8 @@ public class PasswordProvider extends ContentProvider {
     private static final int PASSWORD_ID = 2;
 
     static {
-        sUriMatcher.addURI(PasswordContract.CONTENT_AUTHORITY, PasswordContract.PasswordEntry.TABLE_NAME, PASSWORDS);
-        sUriMatcher.addURI(PasswordContract.CONTENT_AUTHORITY, PasswordContract.PasswordEntry.TABLE_NAME + "/#", PASSWORD_ID);
+        sUriMatcher.addURI(com.razrabotkin.android.passwordmanager.data.PasswordContract.CONTENT_AUTHORITY, com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME, PASSWORDS);
+        sUriMatcher.addURI(com.razrabotkin.android.passwordmanager.data.PasswordContract.CONTENT_AUTHORITY, com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME + "/#", PASSWORD_ID);
     }
 
     /**
@@ -39,7 +39,7 @@ public class PasswordProvider extends ContentProvider {
      */
     @Override
     public boolean onCreate() {
-        mDbHelper = new PasswordDbHelper(getContext());
+        mDbHelper = new com.razrabotkin.android.passwordmanager.data.PasswordDbHelper(getContext());
         return true;
     }
 
@@ -62,7 +62,7 @@ public class PasswordProvider extends ContentProvider {
                 // Для кода PASSWORDS делаем заропс к таблице passwrods непосредственно, используя данные аргументы
                 // projection, selection, selection и sort order. Курсор
                 // будет содержать несколько строк таблицы паролей.
-                cursor = database.query(PasswordContract.PasswordEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = database.query(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case PASSWORD_ID:
                 // Для кода PASSWORD_ID извлекаем ID из URI.
@@ -73,12 +73,12 @@ public class PasswordProvider extends ContentProvider {
                 // Для каждого "?" в аргументе selection нужно иметь элемент в selection
                 // arguments, которым будет заполнен "?". Так как мы имеем 1 вопросительный знак в аргументе
                 // selection, мы имеем 1 строку в строковом массиве selection arguments.
-                selection = PasswordContract.PasswordEntry._ID + "=?";
+                selection = com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
 
                 // Это выражение выполинт запрос к таблице, где _id равен 3, чтобы вернуть
                 // курсор, содержащий эту строку в таблице.
-                cursor = database.query(PasswordContract.PasswordEntry.TABLE_NAME, projection, selection, selectionArgs,
+                cursor = database.query(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
             default:
@@ -113,19 +113,19 @@ public class PasswordProvider extends ContentProvider {
      */
     private Uri insertPassword(Uri uri, ContentValues values) {
         // Проверяем данные, записанные в объекте ContentValues
-        String name = values.getAsString(PasswordContract.PasswordEntry.COLUMN_NAME);
+        String name = values.getAsString(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_NAME);
         if (name == null)
         {
             throw new IllegalArgumentException("Не указано название");
         }
 
-        String login = values.getAsString(PasswordContract.PasswordEntry.COLUMN_LOGIN);
+        String login = values.getAsString(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_LOGIN);
         if (login == null)
         {
             throw new IllegalArgumentException("Не указан логин");
         }
 
-        String password = values.getAsString(PasswordContract.PasswordEntry.COLUMN_PASSWORD);
+        String password = values.getAsString(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_PASSWORD);
         if (password == null)
         {
             throw new IllegalArgumentException("Не указан пароль");
@@ -135,7 +135,7 @@ public class PasswordProvider extends ContentProvider {
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         // Вставляем новую запись в соответствии с заданными значениями
-        long id = database.insert(PasswordContract.PasswordEntry.TABLE_NAME, null, values);
+        long id = database.insert(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME, null, values);
 
         // Если ID равен -1, вставка не удалась. Выводим ошибку в лог и возвращаем null.
         if (id == -1) {
@@ -165,7 +165,7 @@ public class PasswordProvider extends ContentProvider {
                 // Для с лучая с кодом PET_ID, извлекаем ID из URI,
                 // чтобы знать, какую строку обновлять. Selection будет равно "_id=?", selection
                 // arguments будут строковым массивом, содержащим конкретный ID.
-                selection = PasswordContract.PasswordEntry._ID + "=?";
+                selection = com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 return updatePassword(uri, contentValues, selection, selectionArgs);
             default:
@@ -181,8 +181,8 @@ public class PasswordProvider extends ContentProvider {
     private int updatePassword(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         // Если ключ {@link PasswordEntry#COLUMN_NAME} присутствует,
         // проверяем значение на null.
-        if (values.containsKey(PasswordContract.PasswordEntry.COLUMN_NAME)) {
-            String name = values.getAsString(PasswordContract.PasswordEntry.COLUMN_NAME);
+        if (values.containsKey(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_NAME)) {
+            String name = values.getAsString(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_NAME);
             if (name == null) {
                 throw new IllegalArgumentException("Не указано название");
             }
@@ -190,8 +190,8 @@ public class PasswordProvider extends ContentProvider {
 
         // Если ключ {@link PasswordEntry#COLUMN_LOGIN} присутствует, //TODO: Для чего нужны эти ссылки?
         // проверяем значение на null.
-        if (values.containsKey(PasswordContract.PasswordEntry.COLUMN_LOGIN)) {
-            String login = values.getAsString(PasswordContract.PasswordEntry.COLUMN_LOGIN);
+        if (values.containsKey(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_LOGIN)) {
+            String login = values.getAsString(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_LOGIN);
             if (login == null) {
                 throw new IllegalArgumentException("Не указан логин");
             }
@@ -199,8 +199,8 @@ public class PasswordProvider extends ContentProvider {
 
         // Если ключ {@link PasswordEntry#COLUMN_PASSWORD} присутствует,
         // проверяем значение на null.
-        if (values.containsKey(PasswordContract.PasswordEntry.COLUMN_PASSWORD)) {
-            String password = values.getAsString(PasswordContract.PasswordEntry.COLUMN_PASSWORD);
+        if (values.containsKey(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_PASSWORD)) {
+            String password = values.getAsString(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.COLUMN_PASSWORD);
             if (password == null) {
                 throw new IllegalArgumentException("Не указан пароль");
             }
@@ -215,7 +215,7 @@ public class PasswordProvider extends ContentProvider {
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         // Сохраняем количество строк в базе данных, затронутых обновлением, в переменную rowsUpdated
-        int rowsUpdated = database.update(PasswordContract.PasswordEntry.TABLE_NAME, values, selection, selectionArgs);
+        int rowsUpdated = database.update(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME, values, selection, selectionArgs);
 
         // Если одна или более строк были обновлены, уведомляем всех слушателей о том, что данные по данному
         // URI поменялись
@@ -245,16 +245,16 @@ public class PasswordProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
 
                 // Удаляем все строки, которые соответствуют selection и selection args
-                rowsDeleted = database.delete(PasswordContract.PasswordEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = database.delete(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case PASSWORD_ID:
                 // Уведомляем всех слушателей, что данные в URI контента изменены.
                 getContext().getContentResolver().notifyChange(uri, null);
 
                 // Удаляем одну строку, определяемую по ID в URI
-                selection = PasswordContract.PasswordEntry._ID + "=?";
+                selection = com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                rowsDeleted = database.delete(PasswordContract.PasswordEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = database.delete(com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
@@ -278,9 +278,9 @@ public class PasswordProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case PASSWORDS:
-                return PasswordContract.PasswordEntry.CONTENT_LIST_TYPE;
+                return com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.CONTENT_LIST_TYPE;
             case PASSWORD_ID:
-                return PasswordContract.PasswordEntry.CONTENT_ITEM_TYPE;
+                return com.razrabotkin.android.passwordmanager.data.PasswordContract.PasswordEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
         }
