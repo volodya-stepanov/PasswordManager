@@ -4,8 +4,12 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +19,18 @@ import android.widget.ToggleButton;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * {@link PasswordCursorAdapter} - это адаптер для listView или gridView,
  * который использует {@link Cursor} данных о паролях и их источник. Этот адаптер знает,
  * как создать пункты списка для каждой строки данных в {@link Cursor}.
  */
 public class PasswordCursorAdapter extends CursorAdapter {
+
+    // Строка, которую нужно искать и подсвечивать
+    String textToSearch = null;
 
     /**
      * Создаёт новый {@link PasswordCursorAdapter}.
@@ -111,5 +121,46 @@ public class PasswordCursorAdapter extends CursorAdapter {
                 context.getContentResolver().update(uri, values, null, null);
             }
         });
+
+        // Поиск и подсветка по искомому слову
+        // Перекрываемая (spannable) строка для подсветки искомых слов
+        SpannableString spannableStringSearch = null;
+
+        if ((textToSearch != null) && (!textToSearch.isEmpty())) {
+            // Сюда в качестве параметра передаётся строка, по которой будет выполняться поиск
+            spannableStringSearch = new SpannableString(name);
+
+            // Собираем шаблон входного текста // TODO: Ознакомиться с этим классом подробнее
+            Pattern pattern = Pattern.compile(textToSearch, Pattern.CASE_INSENSITIVE);
+
+            // Передаём этот шаблон сопоставителю, чтобы найти соответствующий текст в имени
+            Matcher matcher = pattern.matcher(name);
+
+            // TODO: Зачем это сдесь? Чтобы обнулить?
+            spannableStringSearch.setSpan(new BackgroundColorSpan(Color.TRANSPARENT), 0, spannableStringSearch.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            while (matcher.find()) {
+
+                //highlight all matching words in cursor with white background(since i have a colorfull background image)
+                spannableStringSearch.setSpan(new BackgroundColorSpan(
+                                Color.YELLOW), matcher.start(), matcher.end(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+
+        if(spannableStringSearch != null) {
+
+            // Если поиск выполнен, устанавливаем spannable строку в textView
+            nameTextView.setText(spannableStringSearch);
+        } else {
+
+            // иначе устанавливаем обычный текст из курсора
+            nameTextView.setText(name);
+        }
+    }
+
+    // Передаем текст из MainActivity
+    public void searchText(String text) {
+        this.textToSearch = text;
     }
 }

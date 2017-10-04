@@ -126,23 +126,16 @@ public class MainActivity extends AppCompatActivity
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            SearchView search = (SearchView) menu.findItem(R.id.action_search).getActionView();
-            search.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+            SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
 
-            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
                 @Override
                 public boolean onQueryTextSubmit(String s) {
                     Log.d(TAG, "onQueryTextSubmit ");
                     getCardsListByKeyword(s);
-//                    if (cursor==null){
-//                        Toast.makeText(MainActivity.this,"No records found!",Toast.LENGTH_LONG).show();
-//                    }else{
-//                        Toast.makeText(MainActivity.this, cursor.getCount() + " records found!",Toast.LENGTH_LONG).show();
-//                    }
-//                    customAdapter.swapCursor(cursor);
-//
-                   return false;
+                    return false;
                 }
 
                 @Override
@@ -255,6 +248,8 @@ public class MainActivity extends AppCompatActivity
 
         // Выполняем запрос, получая в результате курсор
         Cursor cursor = getContentResolver().query(PasswordContract.PasswordEntry.CONTENT_URI, projection, selection, null, null);
+
+        mCursorAdapter.searchText(search);
 
         // Вызываем метод swapCursor с полученным курсором, чтобы список обновился
         mCursorAdapter.swapCursor(cursor);
