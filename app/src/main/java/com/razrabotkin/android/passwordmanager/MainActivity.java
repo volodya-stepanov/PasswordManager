@@ -3,7 +3,6 @@ package com.razrabotkin.android.passwordmanager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -26,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
@@ -237,11 +235,14 @@ public class MainActivity extends AppCompatActivity
                 PasswordContract.PasswordEntry._ID,
                 PasswordContract.PasswordEntry.COLUMN_NAME,
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
+                PasswordContract.PasswordEntry.COLUMN_NOTE,
                 PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
         };
 
         // Задаём параметр selection, определяющий в запросе условие WHERE
-        String selection = PasswordContract.PasswordEntry.COLUMN_NAME + " LIKE '%" + search + "%'";
+        String selection = PasswordContract.PasswordEntry.COLUMN_NAME + " LIKE '%" + search + "%' OR " +
+        PasswordContract.PasswordEntry.COLUMN_LOGIN + " LIKE '%" + search + "%' OR " +
+        PasswordContract.PasswordEntry.COLUMN_NOTE + " LIKE '%" + search + "%'";
 
         // Задаём параметр selectionArgs, определяющий значения аргументов
         String[] selectionArgs = {search};
@@ -265,6 +266,7 @@ public class MainActivity extends AppCompatActivity
                 PasswordContract.PasswordEntry._ID,
                 PasswordContract.PasswordEntry.COLUMN_NAME,
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
+                PasswordContract.PasswordEntry.COLUMN_NOTE,
                 PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
         };
 
@@ -283,6 +285,7 @@ public class MainActivity extends AppCompatActivity
                 PasswordContract.PasswordEntry._ID,
                 PasswordContract.PasswordEntry.COLUMN_NAME,
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
+                PasswordContract.PasswordEntry.COLUMN_NOTE,
                 PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
         };
 

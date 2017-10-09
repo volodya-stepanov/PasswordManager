@@ -13,6 +13,7 @@
     <color name="dot_dark">#717171</color>
 
     <color name="light_gray">#e0e0e0</color>
+    <color name="selection_yellow">#ffeb3c</color>
 </resources>
 <!--Заголовок: SafeInCloud-->
 
