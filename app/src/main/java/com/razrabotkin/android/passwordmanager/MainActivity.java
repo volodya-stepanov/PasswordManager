@@ -117,41 +117,36 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.main, menu);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-            searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
 
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-                @Override
-                public boolean onQueryTextSubmit(String s) {
-                    Log.d(TAG, "onQueryTextSubmit ");
-                    getCardsListByKeyword(s);
-                    return false;
-                }
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Log.d(TAG, "onQueryTextSubmit ");
+                getCardsListByKeyword(s);
+                return false;
+            }
 
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    Log.d(TAG, "onQueryTextChange ");
-                    getCardsListByKeyword(s);
-//                    if (cursor!=null){
-//                        customAdapter.swapCursor(cursor);
-//                    }
-                    return false;
-                }
-
-            });
-
-        }
-
-        return true;
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Log.d(TAG, "onQueryTextChange ");
+                getCardsListByKeyword(s);
+                return false;
+            }
+        });
     }
+
+    return true;
+}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -228,33 +223,34 @@ public class MainActivity extends AppCompatActivity
         mCursorAdapter.swapCursor(cursor);
     }
 
-    private void getCardsListByKeyword(String search) {
-        // Определяем массив projection, который указывает, какие колонки из базы данных
-        // мы увидим после этого запроса.
-        String[] projection = {
-                PasswordContract.PasswordEntry._ID,
-                PasswordContract.PasswordEntry.COLUMN_NAME,
-                PasswordContract.PasswordEntry.COLUMN_LOGIN,
-                PasswordContract.PasswordEntry.COLUMN_NOTE,
-                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
-        };
+private void getCardsListByKeyword(String search) {
+    // Определяем массив projection, который указывает, какие колонки из базы данных
+    // мы увидим после этого запроса.
+    String[] projection = {
+            PasswordContract.PasswordEntry._ID,
+            PasswordContract.PasswordEntry.COLUMN_NAME,
+            PasswordContract.PasswordEntry.COLUMN_LOGIN,
+            PasswordContract.PasswordEntry.COLUMN_NOTE,
+            PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+    };
 
-        // Задаём параметр selection, определяющий в запросе условие WHERE
-        String selection = PasswordContract.PasswordEntry.COLUMN_NAME + " LIKE '%" + search + "%' OR " +
-        PasswordContract.PasswordEntry.COLUMN_LOGIN + " LIKE '%" + search + "%' OR " +
-        PasswordContract.PasswordEntry.COLUMN_NOTE + " LIKE '%" + search + "%'";
+    // Задаём параметр selection, определяющий в запросе условие WHERE
+    String selection = PasswordContract.PasswordEntry.COLUMN_NAME + " LIKE '%" + search + "%' OR " +
+    PasswordContract.PasswordEntry.COLUMN_LOGIN + " LIKE '%" + search + "%' OR " +
+    PasswordContract.PasswordEntry.COLUMN_NOTE + " LIKE '%" + search + "%'";
 
-        // Задаём параметр selectionArgs, определяющий значения аргументов
-        String[] selectionArgs = {search};
+    // Задаём параметр selectionArgs, определяющий значения аргументов
+    String[] selectionArgs = {search};
 
-        // Выполняем запрос, получая в результате курсор
-        Cursor cursor = getContentResolver().query(PasswordContract.PasswordEntry.CONTENT_URI, projection, selection, null, null);
+    // Выполняем запрос, получая в результате курсор
+    Cursor cursor = getContentResolver().query(PasswordContract.PasswordEntry.CONTENT_URI, projection, selection, null, null);
 
-        mCursorAdapter.searchText(search);
+    // Этот метод предназначен для выделения текста
+    mCursorAdapter.searchText(search);
 
-        // Вызываем метод swapCursor с полученным курсором, чтобы список обновился
-        mCursorAdapter.swapCursor(cursor);
-    }
+    // Вызываем метод swapCursor с полученным курсором, чтобы список обновился
+    mCursorAdapter.swapCursor(cursor);
+}
 
     /**
      * Осуществляет выборку из базы всех записей
