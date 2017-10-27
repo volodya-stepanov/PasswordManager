@@ -4,8 +4,13 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +20,20 @@ import android.widget.ToggleButton;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * {@link PasswordCursorAdapter} - это адаптер для listView или gridView,
  * который использует {@link Cursor} данных о паролях и их источник. Этот адаптер знает,
  * как создать пункты списка для каждой строки данных в {@link Cursor}.
  */
 public class PasswordCursorAdapter extends CursorAdapter {
+
+    // Строка, которую нужно искать и подсвечивать
+    String textToSearch = null;
+
+    private final static String TAG= PasswordCursorAdapter.class.getName().toString();
 
     /**
      * Создаёт новый {@link PasswordCursorAdapter}.
@@ -67,11 +80,13 @@ public class PasswordCursorAdapter extends CursorAdapter {
         int nameColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NAME);
         int loginColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_LOGIN);
         int isFavoriteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE);
+        int noteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NOTE);
 
         // Считываем атрибуты из курсора для текущей записи
         final int id = cursor.getInt(idColumnIndex);
         String name = cursor.getString(nameColumnIndex);
         String login = cursor.getString(loginColumnIndex);
+        String note = cursor.getString(noteColumnIndex);
 
         boolean isFavorite;
 
@@ -111,5 +126,81 @@ public class PasswordCursorAdapter extends CursorAdapter {
                 context.getContentResolver().update(uri, values, null, null);
             }
         });
+
+        SpannableString nameSpannableString = findTextInTextView(context, name, nameTextView);
+
+        if (nameSpannableString != null){
+            nameTextView.setText(nameSpannableString);
+        } else {
+            //nameTextView.setText(name);
+        }
+
+        SpannableString loginSpannableString = findTextInTextView(context, login, loginTextView);
+
+        if (loginSpannableString != null){
+            loginTextView.setText(loginSpannableString);
+        }
+
+        SpannableString noteSpannableString = findTextInTextView(context, note, loginTextView);
+
+        if (noteSpannableString != null){
+            loginTextView.setText(noteSpannableString);
+        }
+
+    }
+
+    // Передаем текст из MainActivity
+    public void searchText(String text) {
+        this.textToSearch = text;
+    }
+
+    private SpannableString findTextInTextView(Context context, String string, TextView textView){
+        // Поиск и подсветка по искомому слову
+        // Перекрываемая (spannable) строка для подсветки искомых слов
+        SpannableString spannableStringSearch = null;
+        boolean matcherFind = false;    // Эта переменная введена для того, чтобы зафиксировать, нашёлся ли результат в данной строке. Если не нашёлся, spannableStringSearch присваиваем значение null. Иначе в любом случае возвращается эта строка (даже если в ней ничего не выделено), и, например, если результат найден в логине, но не найден в заметках, то всё равно в подзаголовке отобразятся заметки
+
+        if ((textToSearch != null) && (!textToSearch.isEmpty())) {
+            // Сюда в качестве параметра передаётся строка, по которой будет выполняться поиск
+            spannableStringSearch = new SpannableString(string);
+
+            // Собираем шаблон входного текста // TODO: Ознакомиться с этим классом подробнее
+            Pattern pattern = Pattern.compile(textToSearch, Pattern.CASE_INSENSITIVE);
+
+            // Передаём этот шаблон сопоставителю, чтобы найти соответствующий текст в имени
+            Matcher matcher = pattern.matcher(string);
+
+            // TODO: Зачем это сдесь? Чтобы обнулить?
+            spannableStringSearch.setSpan(new BackgroundColorSpan(Color.TRANSPARENT), 0, spannableStringSearch.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+            while (matcher.find()) {
+
+                matcherFind = true;
+
+                //highlight all matching words in cursor with white background(since i have a colorfull background image)
+                spannableStringSearch.setSpan(new BackgroundColorSpan(
+                                context.getResources().getColor(R.color.selection_yellow)), matcher.start(), matcher.end(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            Log.v(TAG, "matcher.find() == " + matcherFind);
+        }
+
+        if (!matcherFind){
+            spannableStringSearch = null;
+        }
+
+//        if(spannableStringSearch != null) {
+//
+//            // Если поиск выполнен, устанавливаем spannable строку в textView
+//            textView.setText(spannableStringSearch);
+//        } else {
+//
+//            // иначе устанавливаем обычный текст из курсора
+//            //nameTextView.setText(name);
+//        }
+
+        return spannableStringSearch;
     }
 }
