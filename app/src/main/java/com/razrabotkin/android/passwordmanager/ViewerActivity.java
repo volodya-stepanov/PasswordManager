@@ -15,11 +15,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +49,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     private LinearLayout mLinearLayout; // Для Snackbar
     private TextView mChangedAtTextView;
     private ToggleButton mFavoriteToggleButton;
+    private ImageView mIconImageView;
 
     private boolean mShowPassword = true;
 
@@ -93,6 +96,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         mLinearLayout = (LinearLayout) findViewById(R.id.activity_viewer);
         mChangedAtTextView = (TextView) findViewById(R.id.text_view_changed_at);
         mFavoriteToggleButton = (ToggleButton) findViewById(R.id.toggle_button_favorite);
+        mIconImageView = (ImageView) findViewById(R.id.image_view_icon);
 
 //        mNameTextView.setOnTouchListener(mTouchListener);
 //        mLoginEditText.setOnTouchListener(mTouchListener);
@@ -462,5 +466,29 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         values.put(PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE, value);
 
         int rowsAffected = getContentResolver().update(mCurrentCardUri, values, null, null);
+    }
+
+    /**
+     * Обработчик события нажатия на иконку карты. Открывает всплывающее меню для настройки иконки.
+     * @param view Элемент, который был щёлкнут
+     */
+    public void onIconClicked(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, mIconImageView);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_icon_popup, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_select_color:
+                        Toast.makeText(getBaseContext(), "Выбрать цвет", Toast.LENGTH_LONG).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        popupMenu.show();
     }
 }

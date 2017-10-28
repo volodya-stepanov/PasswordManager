@@ -76,4 +76,8 @@
     <string name="menu_item_manage_labels">Ярлыки</string>
     <string name="menu_item_settings">Настройки</string>
     <string name="empty_view_title_text">Нет карт</string>
+    <string name="action_select_color">Выбрать цвет</string>
+    <string name="action_select_symbol">Выбрать символ</string>
+    <string name="action_use_custom_icon">Использовать свою иконку</string>
+    <string name="action_use_website_icon">Использовать иконку веб-сайта</string>
 </resources>

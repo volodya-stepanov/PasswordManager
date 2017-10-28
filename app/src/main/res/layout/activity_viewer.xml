@@ -85,14 +85,16 @@
         </RelativeLayout>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/image_view_icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
             android:background="@drawable/simple_circle"
-            android:gravity="center" />
+            android:gravity="center"
+            android:clickable="true"
+            android:onClick="onIconClicked"/>
     </LinearLayout>
 
     <!--Логин-->
