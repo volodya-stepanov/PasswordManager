@@ -1,6 +1,7 @@
 package com.razrabotkin.android.passwordmanager;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,9 +18,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +58,9 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     private ImageView mIconImageView;
 
     private boolean mShowPassword = true;
+
+    private final int CATEGORY_ID=0;
+    Dialog dialog;
 
     //private boolean mCardHasChanged = false;
 
@@ -481,7 +490,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_select_color:
-                        Toast.makeText(getBaseContext(), "Выбрать цвет", Toast.LENGTH_LONG).show();
+                        showDialog(CATEGORY_ID);
                         return true;
                     default:
                         return false;
@@ -490,5 +499,110 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         });
 
         popupMenu.show();
+    }
+
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id){
+            case CATEGORY_ID:
+                AlertDialog.Builder builder;
+                Context mContext = this;
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View layout = inflater.inflate(R.layout.dialog_select_color, (ViewGroup)findViewById(R.id.layout_root));
+
+                ImageView close = (ImageView) layout.findViewById(R.id.close);
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                GridView gridView = (GridView) layout.findViewById(R.id.gridview1);
+                ImageAdapter imageAdapter = new ImageAdapter(this);
+                gridView.setAdapter(imageAdapter);
+
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Toast.makeText(view.getContext(), "Position is " + i, Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                builder = new AlertDialog.Builder(mContext);
+                builder.setView(layout);
+                dialog = builder.create();
+                break;
+            default:
+                dialog = null;
+        }
+        return dialog;
+    }
+
+    public class ImageAdapter extends BaseAdapter {
+
+        private Context mContext;
+        private LayoutInflater mInflater;
+
+        public ImageAdapter(Context c){
+            mInflater = LayoutInflater.from(c);
+            mContext = c;
+        }
+
+        @Override
+        public int getCount() {
+            return mThumbIds.length;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        // Создаем ImageView для каждого пункта
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
+            if (convertView == null){ // если не рециркулировано
+                convertView = mInflater.inflate(R.layout.color_grid_item, null);
+                convertView.setLayoutParams(new GridView.LayoutParams(100, 100));
+                holder = new ViewHolder();
+                holder.title = (TextView) convertView.findViewById(R.id.text);
+                holder.icon = (ImageView) convertView.findViewById(R.id.image);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            holder.icon.setAdjustViewBounds(true);
+            holder.icon.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            holder.icon.setPadding(5, 5, 5, 5);
+
+            holder.title.setText(categoryContent[position]);
+            holder.icon.setImageResource(mThumbIds[position]);
+            return convertView;
+        }
+
+        public class ViewHolder {
+            TextView title;
+            ImageView icon;
+        }
+
+        // ссылки на наши иконки
+        private Integer[] mThumbIds = {R.drawable.ic_star_border_black_24dp, R.drawable.ic_visibility_black_24dp, R.drawable.ic_star_black_24dp,
+                R.drawable.ic_star_border_black_24dp, R.drawable.ic_templates_black_24dp, R.drawable.ic_visibility_black_24dp,
+                R.drawable.ic_star_border_black_24dp, R.drawable.ic_visibility_black_24dp, R.drawable.ic_templates_black_24dp};
+
+        private String[] categoryContent = {
+                "Pubs", "Restaurants", "Sgopping",
+                "Theatre", "Train", "Taxi",
+                "Gas", "Police", "Hospital"
+        };
     }
 }
