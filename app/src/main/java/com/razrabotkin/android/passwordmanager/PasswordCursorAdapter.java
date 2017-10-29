@@ -30,8 +30,8 @@ import java.util.regex.Pattern;
  */
 public class PasswordCursorAdapter extends CursorAdapter {
 
-    // Строка, которую нужно искать и подсвечивать
-    String textToSearch = null;
+// Строка, которую нужно искать и подсвечивать
+String mTextToSearch = null;
 
     private final static String TAG= PasswordCursorAdapter.class.getName().toString();
 
@@ -127,21 +127,19 @@ public class PasswordCursorAdapter extends CursorAdapter {
             }
         });
 
-        SpannableString nameSpannableString = findTextInTextView(context, name, nameTextView);
+        SpannableString nameSpannableString = findTextInTextView(context, name);
 
         if (nameSpannableString != null){
             nameTextView.setText(nameSpannableString);
-        } else {
-            //nameTextView.setText(name);
         }
 
-        SpannableString loginSpannableString = findTextInTextView(context, login, loginTextView);
+        SpannableString loginSpannableString = findTextInTextView(context, login);
 
         if (loginSpannableString != null){
             loginTextView.setText(loginSpannableString);
         }
 
-        SpannableString noteSpannableString = findTextInTextView(context, note, loginTextView);
+        SpannableString noteSpannableString = findTextInTextView(context, note);
 
         if (noteSpannableString != null){
             loginTextView.setText(noteSpannableString);
@@ -149,58 +147,58 @@ public class PasswordCursorAdapter extends CursorAdapter {
 
     }
 
-    // Передаем текст из MainActivity
-    public void searchText(String text) {
-        this.textToSearch = text;
+// Передаем текст из MainActivity
+public void searchText(String text) {
+    this.mTextToSearch = text;
+}
+
+private SpannableString findTextInTextView(Context context, String string){
+    // Поиск и подсветка по искомому слову
+    // Перекрываемая (spannable) строка для подсветки искомых слов
+    SpannableString spannableStringSearch = null;
+
+    // Эта переменная введена для того, чтобы зафиксировать, нашёлся ли результат в данной строке.
+    // Если не нашёлся, spannableStringSearch присваиваем значение null.
+    // Иначе в любом случае возвращается эта строка (даже если в ней ничего не выделено),
+    // и, например, если результат найден в логине, но не найден в заметках, то всё равно
+    // в подзаголовке отобразятся заметки
+    boolean matcherFind = false;
+
+    if ((mTextToSearch != null) && (!mTextToSearch.isEmpty())) {
+        // Сюда в качестве параметра передаётся строка, по которой будет выполняться поиск
+        spannableStringSearch = new SpannableString(string);
+
+        // Собираем шаблон входного текста // TODO: Ознакомиться с этим классом подробнее
+        Pattern pattern = Pattern.compile(mTextToSearch, Pattern.CASE_INSENSITIVE);
+
+        // Передаём этот шаблон сопоставителю, чтобы найти соответствующий текст в имени
+        Matcher matcher = pattern.matcher(string);
+
+        // TODO: Зачем это сдесь? Чтобы обнулить?
+        spannableStringSearch.setSpan(
+                new BackgroundColorSpan(Color.TRANSPARENT),
+                0,
+                spannableStringSearch.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        while (matcher.find()) {
+
+            matcherFind = true;
+
+            // Подсвечиваем все соответствующие слова в курсоре
+            spannableStringSearch.setSpan(
+                    new BackgroundColorSpan(
+                            context.getResources().getColor(R.color.selection_yellow)),
+                    matcher.start(),
+                    matcher.end(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
-    private SpannableString findTextInTextView(Context context, String string, TextView textView){
-        // Поиск и подсветка по искомому слову
-        // Перекрываемая (spannable) строка для подсветки искомых слов
-        SpannableString spannableStringSearch = null;
-        boolean matcherFind = false;    // Эта переменная введена для того, чтобы зафиксировать, нашёлся ли результат в данной строке. Если не нашёлся, spannableStringSearch присваиваем значение null. Иначе в любом случае возвращается эта строка (даже если в ней ничего не выделено), и, например, если результат найден в логине, но не найден в заметках, то всё равно в подзаголовке отобразятся заметки
-
-        if ((textToSearch != null) && (!textToSearch.isEmpty())) {
-            // Сюда в качестве параметра передаётся строка, по которой будет выполняться поиск
-            spannableStringSearch = new SpannableString(string);
-
-            // Собираем шаблон входного текста // TODO: Ознакомиться с этим классом подробнее
-            Pattern pattern = Pattern.compile(textToSearch, Pattern.CASE_INSENSITIVE);
-
-            // Передаём этот шаблон сопоставителю, чтобы найти соответствующий текст в имени
-            Matcher matcher = pattern.matcher(string);
-
-            // TODO: Зачем это сдесь? Чтобы обнулить?
-            spannableStringSearch.setSpan(new BackgroundColorSpan(Color.TRANSPARENT), 0, spannableStringSearch.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-
-            while (matcher.find()) {
-
-                matcherFind = true;
-
-                //highlight all matching words in cursor with white background(since i have a colorfull background image)
-                spannableStringSearch.setSpan(new BackgroundColorSpan(
-                                context.getResources().getColor(R.color.selection_yellow)), matcher.start(), matcher.end(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-
-            Log.v(TAG, "matcher.find() == " + matcherFind);
-        }
-
-        if (!matcherFind){
-            spannableStringSearch = null;
-        }
-
-//        if(spannableStringSearch != null) {
-//
-//            // Если поиск выполнен, устанавливаем spannable строку в textView
-//            textView.setText(spannableStringSearch);
-//        } else {
-//
-//            // иначе устанавливаем обычный текст из курсора
-//            //nameTextView.setText(name);
-//        }
-
-        return spannableStringSearch;
+    if (!matcherFind){
+        spannableStringSearch = null;
     }
+
+    return spannableStringSearch;
+}
 }
