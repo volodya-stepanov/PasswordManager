@@ -511,13 +511,13 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
                 View layout = inflater.inflate(R.layout.dialog_select_color, (ViewGroup)findViewById(R.id.layout_root));
 
-                ImageView close = (ImageView) layout.findViewById(R.id.close);
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
+//                ImageView close = (ImageView) layout.findViewById(R.id.close);
+//                close.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        dialog.dismiss();
+//                    }
+//                });
 
                 GridView gridView = (GridView) layout.findViewById(R.id.gridview1);
                 ImageAdapter imageAdapter = new ImageAdapter(this);
