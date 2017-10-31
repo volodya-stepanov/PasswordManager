@@ -573,7 +573,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 convertView = mInflater.inflate(R.layout.color_grid_item, null);
                 convertView.setLayoutParams(new GridView.LayoutParams(100, 100));
                 holder = new ViewHolder();
-                holder.title = (TextView) convertView.findViewById(R.id.text);
+                //holder.title = (TextView) convertView.findViewById(R.id.text);
                 holder.icon = (ImageView) convertView.findViewById(R.id.image);
                 convertView.setTag(holder);
             } else {
@@ -584,7 +584,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             holder.icon.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.icon.setPadding(5, 5, 5, 5);
 
-            holder.title.setText(categoryContent[position]);
+            //holder.title.setText(categoryContent[position]);
             holder.icon.setImageResource(mThumbIds[position]);
             return convertView;
         }
