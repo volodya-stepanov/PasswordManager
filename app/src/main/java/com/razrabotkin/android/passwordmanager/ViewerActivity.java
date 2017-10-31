@@ -531,8 +531,17 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 });
 
                 builder = new AlertDialog.Builder(mContext);
-                builder.setView(layout);
+                builder.setView(layout)
+                        .setTitle("Select Color")   //TODO: Поместить в строковые ресурсы
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+                                    }
+                                });
                 dialog = builder.create();
+
                 break;
             default:
                 dialog = null;
