@@ -14,6 +14,24 @@
 
     <color name="light_gray">#e0e0e0</color>
     <color name="selection_yellow">#ffeb3c</color>
+
+
+    <color name="circle_color_1">#f15723</color>
+    <color name="circle_color_2">#dc4437</color>
+    <color name="circle_color_3">#f0851d</color>
+    <color name="circle_color_4">#eca402</color>
+    <color name="circle_color_5">#f0ca39</color>
+    <color name="circle_color_6">#c3d140</color>
+    <color name="circle_color_7">#64b044</color>
+    <color name="circle_color_8">#109d59</color>
+    <color name="circle_color_9">#11aacc</color>
+    <color name="circle_color_10">#4385f5</color>
+    <color name="circle_color_11">#3f5ca8</color>
+    <color name="circle_color_12">#9e69af</color>
+    <color name="circle_color_13">#bc5779</color>
+    <color name="circle_color_14">#89695e</color>
+    <color name="circle_color_15">#999999</color>
+    <color name="circle_color_16">#333333</color>
 </resources>
 <!--Заголовок: SafeInCloud-->
 

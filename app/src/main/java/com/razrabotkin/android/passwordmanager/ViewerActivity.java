@@ -508,25 +508,20 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             case CATEGORY_ID:
                 AlertDialog.Builder builder;
                 Context mContext = this;
+
+                //TODO: Почитать про LayoutInflater
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
                 View layout = inflater.inflate(R.layout.dialog_select_color, (ViewGroup)findViewById(R.id.layout_root));
 
-//                ImageView close = (ImageView) layout.findViewById(R.id.close);
-//                close.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        dialog.dismiss();
-//                    }
-//                });
-
-                GridView gridView = (GridView) layout.findViewById(R.id.gridview1);
+                final GridView gridView = (GridView) layout.findViewById(R.id.gridview1);
                 ImageAdapter imageAdapter = new ImageAdapter(this);
                 gridView.setAdapter(imageAdapter);
 
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(view.getContext(), "Position is " + i, Toast.LENGTH_LONG).show();
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                        Toast.makeText(view.getContext(), "Position is " + position, Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -591,10 +586,10 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
 
             holder.icon.setAdjustViewBounds(true);
             holder.icon.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            holder.icon.setPadding(5, 5, 5, 5);
+            //holder.icon.setPadding(5, 5, 5, 5);
 
             //holder.title.setText(categoryContent[position]);
-            holder.icon.setImageResource(mThumbIds[position]);
+            holder.icon.setBackground(getDrawable(mThumbIds[position]));
             return convertView;
         }
 
@@ -604,14 +599,23 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         // ссылки на наши иконки
-        private Integer[] mThumbIds = {R.drawable.ic_star_border_black_24dp, R.drawable.ic_visibility_black_24dp, R.drawable.ic_star_black_24dp,
-                R.drawable.ic_star_border_black_24dp, R.drawable.ic_templates_black_24dp, R.drawable.ic_visibility_black_24dp,
-                R.drawable.ic_star_border_black_24dp, R.drawable.ic_visibility_black_24dp, R.drawable.ic_templates_black_24dp};
-
-        private String[] categoryContent = {
-                "Pubs", "Restaurants", "Sgopping",
-                "Theatre", "Train", "Taxi",
-                "Gas", "Police", "Hospital"
+        private Integer[] mThumbIds = {
+                R.drawable.color_circle_1,
+                R.drawable.color_circle_2,
+                R.drawable.color_circle_3,
+                R.drawable.color_circle_4,
+                R.drawable.color_circle_5,
+                R.drawable.color_circle_6,
+                R.drawable.color_circle_7,
+                R.drawable.color_circle_8,
+                R.drawable.color_circle_9,
+                R.drawable.color_circle_10,
+                R.drawable.color_circle_11,
+                R.drawable.color_circle_12,
+                R.drawable.color_circle_13,
+                R.drawable.color_circle_14,
+                R.drawable.color_circle_15,
+                R.drawable.color_circle_16
         };
     }
 }
