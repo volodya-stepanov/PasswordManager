@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -520,8 +521,10 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                        Toast.makeText(view.getContext(), "Position is " + position, Toast.LENGTH_LONG).show();
+                        Drawable background = getDrawableByIndex(position);
+                        mIconImageView.setBackground(background);
+                        //Toast.makeText(view.getContext(), "Position is " + position, Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
                     }
                 });
 
@@ -542,6 +545,45 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 dialog = null;
         }
         return dialog;
+    }
+
+    private Drawable getDrawableByIndex(int index) {
+        //TODO: Костыль!
+        switch (index){
+            case 0:
+                return getDrawable(R.drawable.color_circle_1);
+            case 1:
+                return getDrawable(R.drawable.color_circle_2);
+            case 2:
+                return getDrawable(R.drawable.color_circle_3);
+            case 3:
+                return getDrawable(R.drawable.color_circle_4);
+            case 4:
+                return getDrawable(R.drawable.color_circle_5);
+            case 5:
+                return getDrawable(R.drawable.color_circle_6);
+            case 6:
+                return getDrawable(R.drawable.color_circle_7);
+            case 7:
+                return getDrawable(R.drawable.color_circle_8);
+            case 8:
+                return getDrawable(R.drawable.color_circle_9);
+            case 9:
+                return getDrawable(R.drawable.color_circle_10);
+            case 10:
+                return getDrawable(R.drawable.color_circle_11);
+            case 11:
+                return getDrawable(R.drawable.color_circle_12);
+            case 12:
+                return getDrawable(R.drawable.color_circle_13);
+            case 13:
+                return getDrawable(R.drawable.color_circle_14);
+            case 14:
+                return getDrawable(R.drawable.color_circle_15);
+            case 15:
+                return getDrawable(R.drawable.color_circle_16);
+        }
+        return null;
     }
 
     public class ImageAdapter extends BaseAdapter {
