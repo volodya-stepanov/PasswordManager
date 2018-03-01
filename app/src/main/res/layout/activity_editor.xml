@@ -26,13 +26,15 @@
             android:maxLines="1"/>
 
         <ImageView
+            android:id="@+id/image_view_icon"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:background="@drawable/simple_circle"/>
+            android:background="@drawable/simple_circle"
+            android:onClick="onIconClicked"/>
     </LinearLayout>
 
     <LinearLayout

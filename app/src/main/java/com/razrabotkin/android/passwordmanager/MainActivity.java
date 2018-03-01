@@ -1,6 +1,5 @@
 package com.razrabotkin.android.passwordmanager;
 
-import android.app.Dialog;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ContentUris;
@@ -17,23 +16,15 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
 
@@ -272,7 +263,9 @@ private void getCardsListByKeyword(String search) {
                 PasswordContract.PasswordEntry.COLUMN_NAME,
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
                 PasswordContract.PasswordEntry.COLUMN_NOTE,
-                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE,
+                PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX
+
         };
 
         // Выполняем запрос, получая в результате курсор
@@ -291,7 +284,8 @@ private void getCardsListByKeyword(String search) {
                 PasswordContract.PasswordEntry.COLUMN_NAME,
                 PasswordContract.PasswordEntry.COLUMN_LOGIN,
                 PasswordContract.PasswordEntry.COLUMN_NOTE,
-                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE,
+                PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX
         };
 
         // Этот загрузчик выполнит метод query в фоновом потоке

@@ -5,16 +5,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -74,6 +75,7 @@ String mTextToSearch = null;
         TextView nameTextView = (TextView) view.findViewById(R.id.name);
         TextView loginTextView = (TextView) view.findViewById(R.id.login);
         ToggleButton favoriteToggleButton = (ToggleButton) view.findViewById(R.id.toggle_button_favorite);
+        ImageView iconImageView = (ImageView) view.findViewById(R.id.image_view_icon);
 
         // Находим колонки нужных атрибутов записи
         int idColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry._ID);  // ID нужен для определения URI строки для записи в базу признака избранности
@@ -81,6 +83,7 @@ String mTextToSearch = null;
         int loginColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_LOGIN);
         int isFavoriteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE);
         int noteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NOTE);
+        int colorIndexColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX);
 
         // Считываем атрибуты из курсора для текущей записи
         final int id = cursor.getInt(idColumnIndex);
@@ -102,10 +105,16 @@ String mTextToSearch = null;
             login = "Логин не задан";
         }
 
+        int colorIndex = cursor.getInt(colorIndexColumnIndex);
+        Drawable background = getDrawableByIndex(context, colorIndex);
+        iconImageView.setBackground(background);
+
         // Обновляем элементы TextView атрибутами текущей записи
         nameTextView.setText(name);
         loginTextView.setText(login);
         favoriteToggleButton.setChecked(isFavorite);
+
+
 
         // При нажатии на кнопку со звездой в списке информация должна обновиться в базе
         favoriteToggleButton.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +154,45 @@ String mTextToSearch = null;
             loginTextView.setText(noteSpannableString);
         }
 
+    }
+
+    private Drawable getDrawableByIndex(Context context, int index) {
+        //TODO: Костыль! Избавиться от повторения этого метода
+        switch (index){
+            case 0:
+                return context.getDrawable(R.drawable.color_circle_1);
+            case 1:
+                return context.getDrawable(R.drawable.color_circle_2);
+            case 2:
+                return context.getDrawable(R.drawable.color_circle_3);
+            case 3:
+                return context.getDrawable(R.drawable.color_circle_4);
+            case 4:
+                return context.getDrawable(R.drawable.color_circle_5);
+            case 5:
+                return context.getDrawable(R.drawable.color_circle_6);
+            case 6:
+                return context.getDrawable(R.drawable.color_circle_7);
+            case 7:
+                return context.getDrawable(R.drawable.color_circle_8);
+            case 8:
+                return context.getDrawable(R.drawable.color_circle_9);
+            case 9:
+                return context.getDrawable(R.drawable.color_circle_10);
+            case 10:
+                return context.getDrawable(R.drawable.color_circle_11);
+            case 11:
+                return context.getDrawable(R.drawable.color_circle_12);
+            case 12:
+                return context.getDrawable(R.drawable.color_circle_13);
+            case 13:
+                return context.getDrawable(R.drawable.color_circle_14);
+            case 14:
+                return context.getDrawable(R.drawable.color_circle_15);
+            case 15:
+                return context.getDrawable(R.drawable.color_circle_16);
+        }
+        return null;
     }
 
 // Передаем текст из MainActivity

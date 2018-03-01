@@ -1,8 +1,6 @@
 package com.razrabotkin.android.passwordmanager.data;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -37,7 +35,7 @@ public class PasswordDbHelper extends SQLiteOpenHelper {
                 + PasswordEntry.COLUMN_NOTE + " TEXT, "
                 + PasswordEntry.COLUMN_CHANGED_AT + " TEXT NOT NULL DEFAULT '1970-01-01 00:00:00.000', "
                 + PasswordEntry.COLUMN_IS_FAVORITE + " INTEGER NOT NULL DEFAULT 0, "
-                + PasswordEntry.COLUMN_COLOR + " TEXT);";
+                + PasswordEntry.COLUMN_COLOR_INDEX + " INTEGER NOT NULL DEFAULT 15);";
 
         db.execSQL(SQL_CREATE_PASSWORDS_TABLE);
     }

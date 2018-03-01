@@ -61,11 +61,9 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     private boolean mShowPassword = true;
 
     private final int CATEGORY_ID=0;
-    Dialog dialog;
+    Dialog mDialog;
 
-	private int mIconColorIndex;
-
-    //private boolean mCardHasChanged = false;
+	//private boolean mCardHasChanged = false;
 
 //    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
 //        @Override
@@ -177,7 +175,9 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 PasswordContract.PasswordEntry.COLUMN_WEBSITE,
                 PasswordContract.PasswordEntry.COLUMN_NOTE,
                 PasswordContract.PasswordEntry.COLUMN_CHANGED_AT,
-                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE,
+                PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX
+
         };
 
         // Этот загрузчик выполнит метод query контент-провайдера в фоновом потоке
@@ -202,7 +202,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             int noteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NOTE);
             int changedAtColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_CHANGED_AT);
             int isFavoriteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE);
-            int colorColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_COLOR);
+            int colorColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX);
             //TODO: Вот здесь нужно преобразовать дату и признак избранности
 
             // Извлекаем из курсора значение по данному индексу колонки
@@ -239,8 +239,10 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             }
 
             // Цвет иконки
-            String colorHexCode = cursor.getString(colorColumnIndex);
-
+            int colorIndex = cursor.getInt(colorColumnIndex);
+            //TODO: Избавиться от повторения этого кода!
+            Drawable background = getDrawableByIndex(colorIndex);
+            mIconImageView.setBackground(background);
 
             // Обновляем представление на экране значениями из базы данных
             mNameTextView.setText(name);
@@ -321,7 +323,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
+                // User clicked the "Cancel" button, so dismiss the mDialog
                 // and continue editing the pet.
                 if (dialog != null) {
                     dialog.dismiss();
@@ -484,6 +486,21 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     /**
+     * Обновляет в базе индекс цвета иконки пароля
+     *
+     * @param value Новое значение индекса
+     */
+    private void updateColorIndex(int value) {
+
+        // Создаем объект ContentValues
+        ContentValues values = new ContentValues();
+        values.put(PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX, value);
+
+        //TODO: Добавить сообщение в лог или убрать эту переменную
+        int rowsAffected = getContentResolver().update(mCurrentCardUri, values, null, null);
+    }
+
+    /**
      * Обработчик события нажатия на иконку карты. Открывает всплывающее меню для настройки иконки.
      * @param view Элемент, который был щёлкнут
      */
@@ -525,11 +542,12 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        mIconColorIndex = position;
+                        updateColorIndex(position);
+
                         Drawable background = getDrawableByIndex(position);
                         mIconImageView.setBackground(background);
                         //Toast.makeText(view.getContext(), "Position is " + position, Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
+                        mDialog.dismiss();
                     }
                 });
 
@@ -543,17 +561,17 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                                         dialogInterface.cancel();
                                     }
                                 });
-                dialog = builder.create();
+                mDialog = builder.create();
 
                 break;
             default:
-                dialog = null;
+                mDialog = null;
         }
-        return dialog;
+        return mDialog;
     }
 
     private Drawable getDrawableByIndex(int index) {
-        //TODO: Костыль! Целых два
+        //TODO: Костыль! Избавиться от повторения этого метода
         switch (index){
             case 0:
                 return getDrawable(R.drawable.color_circle_1);

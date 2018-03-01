@@ -10,6 +10,7 @@
     <!--//TODO: Ознакомиться с более подробной информацией о fontFamily-->
 
     <ImageView
+        android:id="@+id/image_view_icon"
         android:gravity="center"
         android:layout_gravity="center"
         android:layout_marginLeft="16dp"

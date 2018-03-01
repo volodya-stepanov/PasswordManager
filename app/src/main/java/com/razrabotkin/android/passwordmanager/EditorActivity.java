@@ -1,23 +1,34 @@
 package com.razrabotkin.android.passwordmanager;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.razrabotkin.android.passwordmanager.data.PasswordContract;
@@ -38,6 +49,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mPasswordEditText;
     private EditText mWebsiteEditText;
     private EditText mNoteEditText;
+    private ImageView mIconImageView;
+    private int mColorIndex = 14;
 
     private boolean mCardHasChanged = false;
 
@@ -48,6 +61,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             return false;
         }
     };
+
+    private final int CATEGORY_ID=0;
+    Dialog mDialog;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +95,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mPasswordEditText = (EditText) findViewById(R.id.edit_password);
         mWebsiteEditText = (EditText) findViewById(R.id.edit_website);
         mNoteEditText = (EditText) findViewById(R.id.edit_note);
+        mIconImageView = (ImageView) findViewById(R.id.image_view_icon);
 
         mNameEditText.setOnTouchListener(mTouchListener);
         mLoginEditText.setOnTouchListener(mTouchListener);
@@ -124,6 +141,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(PasswordContract.PasswordEntry.COLUMN_WEBSITE, websiteString);
         values.put(PasswordContract.PasswordEntry.COLUMN_NOTE, noteString);
         values.put(PasswordContract.PasswordEntry.COLUMN_CHANGED_AT, dateString);
+        values.put(PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX, mColorIndex);
 
         //TODO: Уьрать эти тосты
         // Если URI контента текущей записи равно null, добавляем новую запись в базу
@@ -222,7 +240,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 PasswordContract.PasswordEntry.COLUMN_WEBSITE,
                 PasswordContract.PasswordEntry.COLUMN_NOTE,
                 PasswordContract.PasswordEntry.COLUMN_CHANGED_AT,
-                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE
+                PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE,
+                PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX
         };
 
         // Этот загрузчик выполнит метод query контент-провайдера в фоновом потоке
@@ -245,6 +264,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             int passwordColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_PASSWORD);
             int websiteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_WEBSITE);
             int noteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NOTE);
+            int colorIndexColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX);
 
             // Извлекаем из курсора значение по данному индексу колонки
             String name = cursor.getString(nameColumnIndex);
@@ -253,6 +273,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             String website = cursor.getString(websiteColumnIndex);
             String note = cursor.getString(noteColumnIndex);
 
+            mColorIndex = cursor.getInt(colorIndexColumnIndex);
+            Drawable background = getDrawableByIndex(mColorIndex);
+            mIconImageView.setBackground(background);
+
             // Обновляем представление на экране значениями из базы данных
             mNameEditText.setText(name);
             mLoginEditText.setText(login);
@@ -260,6 +284,45 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             mWebsiteEditText.setText(website);
             mNoteEditText.setText(note);
         }
+    }
+
+    private Drawable getDrawableByIndex(int index) {
+        //TODO: Костыль! Избавиться от повторения этого метода
+        switch (index){
+            case 0:
+                return getDrawable(R.drawable.color_circle_1);
+            case 1:
+                return getDrawable(R.drawable.color_circle_2);
+            case 2:
+                return getDrawable(R.drawable.color_circle_3);
+            case 3:
+                return getDrawable(R.drawable.color_circle_4);
+            case 4:
+                return getDrawable(R.drawable.color_circle_5);
+            case 5:
+                return getDrawable(R.drawable.color_circle_6);
+            case 6:
+                return getDrawable(R.drawable.color_circle_7);
+            case 7:
+                return getDrawable(R.drawable.color_circle_8);
+            case 8:
+                return getDrawable(R.drawable.color_circle_9);
+            case 9:
+                return getDrawable(R.drawable.color_circle_10);
+            case 10:
+                return getDrawable(R.drawable.color_circle_11);
+            case 11:
+                return getDrawable(R.drawable.color_circle_12);
+            case 12:
+                return getDrawable(R.drawable.color_circle_13);
+            case 13:
+                return getDrawable(R.drawable.color_circle_14);
+            case 14:
+                return getDrawable(R.drawable.color_circle_15);
+            case 15:
+                return getDrawable(R.drawable.color_circle_16);
+        }
+        return null;
     }
 
     @Override
@@ -331,7 +394,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
+                // User clicked the "Cancel" button, so dismiss the mDialog
                 // and continue editing the pet.
                 if (dialog != null) {
                     dialog.dismiss();
@@ -369,5 +432,165 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Завершаем операцию
             finish();
         }
+    }
+
+    /**
+     * Обработчик события нажатия на иконку карты. Открывает всплывающее меню для настройки иконки.
+     * @param view Элемент, который был щёлкнут
+     */
+    public void onIconClicked(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, mIconImageView);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_icon_popup, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_select_color:
+                        showDialog(CATEGORY_ID);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        popupMenu.show();
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id){
+            case CATEGORY_ID:
+                AlertDialog.Builder builder;
+                Context mContext = this;
+
+                //TODO: Почитать про LayoutInflater
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View layout = inflater.inflate(R.layout.dialog_select_color, (ViewGroup)findViewById(R.id.layout_root));
+
+                final GridView gridView = (GridView) layout.findViewById(R.id.gridview1);
+                ImageAdapter imageAdapter = new ImageAdapter(this);
+                gridView.setAdapter(imageAdapter);
+
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        updateColorIndex(position);
+
+                        Drawable background = getDrawableByIndex(position);
+                        mIconImageView.setBackground(background);
+                        //Toast.makeText(view.getContext(), "Position is " + position, Toast.LENGTH_LONG).show();
+                        mDialog.dismiss();
+                    }
+                });
+
+                builder = new AlertDialog.Builder(mContext);
+                builder.setView(layout)
+                        .setTitle("Select Color")   //TODO: Поместить в строковые ресурсы
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+                                    }
+                                });
+                mDialog = builder.create();
+
+                break;
+            default:
+                mDialog = null;
+        }
+        return mDialog;
+    }
+
+    public class ImageAdapter extends BaseAdapter {
+
+        private Context mContext;
+        private LayoutInflater mInflater;
+
+        public ImageAdapter(Context c){
+            mInflater = LayoutInflater.from(c);
+            mContext = c;
+        }
+
+        @Override
+        public int getCount() {
+            return mThumbIds.length;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        // Создаем ImageView для каждого пункта
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageAdapter.ViewHolder holder;
+            if (convertView == null){ // если не рециркулировано
+                convertView = mInflater.inflate(R.layout.color_grid_item, null);
+                convertView.setLayoutParams(new GridView.LayoutParams(100, 100));
+                holder = new ImageAdapter.ViewHolder();
+                //holder.title = (TextView) convertView.findViewById(R.id.text);
+                holder.icon = (ImageView) convertView.findViewById(R.id.image);
+                convertView.setTag(holder);
+            } else {
+                holder = (ImageAdapter.ViewHolder) convertView.getTag();
+            }
+
+            holder.icon.setAdjustViewBounds(true);
+            holder.icon.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //holder.icon.setPadding(5, 5, 5, 5);
+
+            //holder.title.setText(categoryContent[position]);
+            holder.icon.setBackground(getDrawable(mThumbIds[position]));
+            return convertView;
+        }
+
+        public class ViewHolder {
+            TextView title;
+            ImageView icon;
+        }
+
+        // ссылки на наши иконки
+        private Integer[] mThumbIds = {
+                R.drawable.color_circle_1,
+                R.drawable.color_circle_2,
+                R.drawable.color_circle_3,
+                R.drawable.color_circle_4,
+                R.drawable.color_circle_5,
+                R.drawable.color_circle_6,
+                R.drawable.color_circle_7,
+                R.drawable.color_circle_8,
+                R.drawable.color_circle_9,
+                R.drawable.color_circle_10,
+                R.drawable.color_circle_11,
+                R.drawable.color_circle_12,
+                R.drawable.color_circle_13,
+                R.drawable.color_circle_14,
+                R.drawable.color_circle_15,
+                R.drawable.color_circle_16
+        };
+    }
+
+    /**
+     * Обновляет в базе индекс цвета иконки пароля
+     *
+     * @param value Новое значение индекса
+     */
+    private void updateColorIndex(int value) {
+
+        // Создаем объект ContentValues
+        ContentValues values = new ContentValues();
+        values.put(PasswordContract.PasswordEntry.COLUMN_COLOR_INDEX, value);
+
+        //TODO: Добавить сообщение в лог или убрать эту переменную
+        int rowsAffected = getContentResolver().update(mCurrentPasswordUri, values, null, null);
     }
 }
