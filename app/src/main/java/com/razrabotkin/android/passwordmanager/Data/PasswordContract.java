@@ -30,6 +30,7 @@ public final class PasswordContract {
         public final static String COLUMN_NOTE = "note";
         public final static String COLUMN_CHANGED_AT = "changed_at";
         public final static String COLUMN_IS_FAVORITE = "is_favorite";
+        public final static String COLUMN_COLOR = "color";
 
         /**
          * MIME-тип {@link #CONTENT_URI} для списка паролей.

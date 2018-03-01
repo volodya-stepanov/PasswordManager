@@ -63,6 +63,8 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     private final int CATEGORY_ID=0;
     Dialog dialog;
 
+	private int mIconColorIndex;
+
     //private boolean mCardHasChanged = false;
 
 //    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -200,6 +202,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             int noteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_NOTE);
             int changedAtColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_CHANGED_AT);
             int isFavoriteColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_IS_FAVORITE);
+            int colorColumnIndex = cursor.getColumnIndex(PasswordContract.PasswordEntry.COLUMN_COLOR);
             //TODO: Вот здесь нужно преобразовать дату и признак избранности
 
             // Извлекаем из курсора значение по данному индексу колонки
@@ -210,16 +213,14 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             String note = cursor.getString(noteColumnIndex);
             String changedAt = cursor.getString(changedAtColumnIndex);
 
-            //boolean isFavorite;
-
+            // Признак избранности
             if (cursor.getInt(isFavoriteColumnIndex) == 0) {
-                //isFavorite = false;
                 mFavoriteToggleButton.setChecked(false);
             } else {
-                //isFavorite = true;
                 mFavoriteToggleButton.setChecked(true);
             }
 
+            //Дата изменения
             // Создаем новый SimpleDateFormat, в котором указываем исходный формат, в котором хранится дата
             SimpleDateFormat format1 = new SimpleDateFormat();
             format1.applyPattern("yyyy-MM-dd HH:mm:ss.sss");
@@ -236,6 +237,10 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
+            // Цвет иконки
+            String colorHexCode = cursor.getString(colorColumnIndex);
+
 
             // Обновляем представление на экране значениями из базы данных
             mNameTextView.setText(name);
@@ -502,7 +507,6 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         popupMenu.show();
     }
 
-
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id){
@@ -521,6 +525,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        mIconColorIndex = position;
                         Drawable background = getDrawableByIndex(position);
                         mIconImageView.setBackground(background);
                         //Toast.makeText(view.getContext(), "Position is " + position, Toast.LENGTH_LONG).show();
@@ -548,7 +553,7 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     private Drawable getDrawableByIndex(int index) {
-        //TODO: Костыль!
+        //TODO: Костыль! Целых два
         switch (index){
             case 0:
                 return getDrawable(R.drawable.color_circle_1);
