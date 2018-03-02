@@ -683,4 +683,19 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                 R.drawable.color_circle_16
         };
     }
+
+    /**
+     * Класс для передачи иконки в диалог выбора иконки. //TODO: Возмонжо, его можно будет заменить на какой-нибудь примитивный тип, а может быть, добавить туда ещё поля
+     */
+    public class Icon{
+        private int mImageResourceId;
+
+        public Icon(int imageResourceId){
+            mImageResourceId = imageResourceId;
+        }
+
+        public int getImageResourceId(){
+            return mImageResourceId;
+        }
+    }
 }
