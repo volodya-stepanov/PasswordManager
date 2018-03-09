@@ -1,5 +1,6 @@
 package com.razrabotkin.android.passwordmanager;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
@@ -515,6 +516,9 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
                     case R.id.action_select_color:
                         showDialog(CATEGORY_ID);
                         return true;
+                    case R.id.action_select_symbol:
+                        Intent intent = new Intent(getApplicationContext(), IconActivity.class);
+                        startActivityForResult(intent, 1);
                     default:
                         return false;
                 }
@@ -609,6 +613,22 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         return null;
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Проверяем код запроса и код результата.
+        // Если код запроса 1 (то есть, при нажатии на кнопку в MainActivity), и результат - ОК
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK){
+            // Извлекаем из интента data значение строки CountrycodeActivity.RESULT_COUNTRYCODE.
+            // и записываем в строковую переменную imageResourceId.
+            int imageResourceId = data.getIntExtra(IconActivity.RESULT_COUNTRYCODE, 0);
+
+            // Выводим на экран сообщение - тост со значением строки imageResourceId.
+            //Toast.makeText(this, "You selected countrycode: " + imageResourceId, Toast.LENGTH_LONG).show();
+            mIconImageView.setImageResource(imageResourceId);
+        }
+    }
+
     public class ImageAdapter extends BaseAdapter {
 
         private Context mContext;
@@ -684,18 +704,5 @@ public class ViewerActivity extends AppCompatActivity implements LoaderManager.L
         };
     }
 
-    /**
-     * Класс для передачи иконки в диалог выбора иконки. //TODO: Возмонжо, его можно будет заменить на какой-нибудь примитивный тип, а может быть, добавить туда ещё поля
-     */
-    public class Icon{
-        private int mImageResourceId;
 
-        public Icon(int imageResourceId){
-            mImageResourceId = imageResourceId;
-        }
-
-        public int getImageResourceId(){
-            return mImageResourceId;
-        }
-    }
 }

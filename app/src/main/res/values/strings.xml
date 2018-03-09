@@ -101,4 +101,18 @@
     <string name="action_select_symbol">Select symbol</string>
     <string name="action_select_color">Select color</string>
     <string name="action_use_custom_icon">Use custom icon</string>
+
+    <string-array name="icon_images">
+        <item>@drawable/ic_twitter</item>
+        <item>@drawable/ic_twitter</item>
+        <item>@drawable/ic_twitter</item>
+        <item>@drawable/ic_twitter</item>
+    </string-array>
+
+    <string-array name="icon_codes">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 </resources>
